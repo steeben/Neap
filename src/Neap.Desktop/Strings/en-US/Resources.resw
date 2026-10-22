@@ -499,7 +499,7 @@
     <value>Sound devices</value>
   </data>
   <data name="Settings_SoundFollows.Header" xml:space="preserve">
-    <value>Switch to the headset</value>
+    <value>Automatic device switch</value>
   </data>
   <data name="Settings_SoundFollows.Description" xml:space="preserve">
     <value>Makes the headset the default speaker and microphone while it is connected.</value>

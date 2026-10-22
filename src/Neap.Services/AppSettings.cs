@@ -95,10 +95,11 @@ public sealed class AppSettings
 
     /// <summary>Whether the system's default output and microphone move to the headset when it connects, and back when it goes.</summary>
     /// <remarks>
-    /// Off by default: the defaults are the person's to choose, and moving
-    /// them is not something to do without being asked.
+    /// On by default: a transmitter left as the default after the headset is
+    /// switched off plays to nobody. The switch is there for anyone who
+    /// would rather choose the defaults themselves.
     /// </remarks>
-    [JsonPropertyName("sound_follows_headset")] public bool SoundFollowsHeadset { get; set; }
+    [JsonPropertyName("sound_follows_headset")] public bool SoundFollowsHeadset { get; set; } = true;
 
     /// <summary>The output to go back to when the headset goes, by the system's id, or empty for the one before the headset's.</summary>
     [JsonPropertyName("sound_back_to")] public string SoundBackTo { get; set; } = "";

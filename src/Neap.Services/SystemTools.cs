@@ -68,8 +68,8 @@ public static class SystemTools
 
     /// <summary>Opens the system's own sound settings, where the default output and microphone are chosen.</summary>
     /// <remarks>
-    /// The app changes the default device itself only for someone who has
-    /// asked it to; see <see cref="SoundFollowsHeadset"/>. Linux has no one settings app,
+    /// The app changes the default device itself only while its switch for
+    /// that is on; see <see cref="SoundFollowsHeadset"/>. Linux has no one settings app,
     /// so this tries the ones desktops ship, in order.
     /// </remarks>
     /// <exception cref="PlatformNotSupportedException">No sound settings could be found to open.</exception>
