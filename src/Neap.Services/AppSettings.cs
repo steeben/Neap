@@ -106,9 +106,10 @@ public sealed class AppSettings
     public ThemeChoice Theme { get; set; }
 
     /// <summary>How the mini panel is drawn.</summary>
+    /// <remarks>Frosted glass by default, the look the panel was made in; the standard card is there for anyone who would rather it match the window.</remarks>
     [JsonPropertyName("mini_panel_look")]
     [JsonConverter(typeof(JsonStringEnumConverter<PanelLook>))]
-    public PanelLook MiniPanelLook { get; set; }
+    public PanelLook MiniPanelLook { get; set; } = PanelLook.FrostyGlass;
 
     /// <summary>Whether Neap asks GitHub once a day for a newer version.</summary>
     /// <remarks>
