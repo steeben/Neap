@@ -35,7 +35,8 @@ and date.
 - The mini panel can be drawn as frosted glass, after the Frosty Glass
   taskbar theme: the desktop shows through it, blurred, under a tint and a
   soft edge, and it fades in and out as the standard look does. Settings
-  chooses between it and the standard look. On Linux the glass is solid.
+  chooses between it and the standard look; frosted glass is the default.
+  On Linux the glass is solid.
 - Settings has a choice of theme: as the system is set, light, or dark. The
   mini panel follows it too.
 - A keyboard shortcut opens and closes the mini panel, Ctrl + Alt + M by
