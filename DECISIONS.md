@@ -1,5 +1,22 @@
 # Decisions
 
+## 2026-10-22 — The battery on the tray icon
+
+- **Options:** keep the battery in the tooltip only; draw the battery in
+  colour, as the app's battery bar does; a one-colour battery that turns
+  red at a level the person sets; the charge as a number.
+- **Chosen:** a choice in Settings between Neap's glyph, a one-colour
+  battery and the number, the battery by default, with a low level (5 to
+  50%, 20% to start) at which either turns red. The battery shows a bolt
+  while charging. With no reading, the icon is Neap's glyph.
+- **Why:** how much charge is left is what the icon is glanced at for, and
+  a tooltip needs a hover. One colour matches the other icons by the clock,
+  so red stands out only when it means something; people differ on what
+  counts as low, so the level is theirs. A number is exact but busier, so
+  it is offered rather than the default.
+- **Revisit if:** the number is hard to read at 100% scale, or people ask
+  for the colour battery.
+
 ## 2026-10-17 — A mini panel on the tray icon's left click
 
 - **Options:** leave a click on the icon opening the window; a menu of
