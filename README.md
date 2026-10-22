@@ -6,7 +6,7 @@ Quiet control for the Turtle Beach Stealth Pro II on Windows and Linux, in
 place of Swarm II. No driver, no Turtle Beach software, no admin rights.
 
 Turt is a fork of [Neap](https://github.com/lykosapps/Neap) by lykosapps,
-with a new name and logo and a few additions of its own: a battery in the
+with a few additions of its own: a battery in the
 notification area, automatic switching of Windows' sound devices, a frosted
 glass mini panel with its own shortcut, and a Mode button that can skip
 "off". Everything else is Neap's work, under the same licence.
