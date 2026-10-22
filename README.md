@@ -1,6 +1,6 @@
 <img src="docs/neap.png" alt="" width="96" align="right">
 
-# Neap
+# Turt
 
 Quiet control for the Turtle Beach Stealth Pro II on Windows and Linux, in
 place of Swarm II. No driver, no Turtle Beach software, no admin rights.
