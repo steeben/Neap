@@ -13,13 +13,20 @@ public enum TrayClick
 /// <summary>Decides where the mini panel opens, what a click on the tray icon does, and whether it opens the panel.</summary>
 /// <remarks>
 /// <para>
-/// The panel opens beside the notification area, as the system's own volume
-/// flyout does. A desktop does not say where its icons are, but it does say
-/// where its taskbar is: the work area is the screen less the bars, so the
-/// side a bar takes shows as a gap between the two. The panel goes in the
-/// corner next to that bar, on the side the icons are on: the right, except
-/// beside a bar on the left edge. With no bar to find, as with one that hides
-/// itself or a desktop that reports none, it goes bottom right.
+/// The panel opens by the icon that was clicked. A desktop does not say where
+/// its icons are, but a click on one lands on a taskbar, outside the work
+/// area, which is the screen less its bars. So a click on a bar puts the panel
+/// against that bar, centred on the click as far as the work area allows,
+/// which keeps it by the icon on whichever screen the notification area is.
+/// </para>
+/// <para>
+/// Without such a click, as from the icon's menu or on a desktop that does not
+/// say where the pointer is, the panel goes in a corner, as the system's own
+/// volume flyout does. The side a bar takes shows as a gap between the screen
+/// and its work area, and the panel goes in the corner next to that bar, on
+/// the side the icons are on: the right, except beside a bar on the left edge.
+/// With no bar to find, as with one that hides itself or a desktop that
+/// reports none, it goes bottom right.
 /// </para>
 /// <para>
 /// Clicking the icon while the panel is open first takes focus from the
@@ -38,13 +45,23 @@ public static class MiniPanel
     /// <param name="width">The panel's width, in pixels.</param>
     /// <param name="height">The panel's height, in pixels.</param>
     /// <param name="margin">The gap kept to the work area's edges, in pixels.</param>
-    public static Box Place(Box screen, Box work, int width, int height, int margin)
+    /// <param name="click">Where the pointer was when the icon was clicked, or null when that is not known.</param>
+    public static Box Place(Box screen, Box work, int width, int height, int margin, (int X, int Y)? click)
     {
         int w = Math.Min(width, work.Width - 2 * margin), h = Math.Min(height, work.Height - 2 * margin);
+        int right = work.X + work.Width - w - margin, bottom = work.Y + work.Height - h - margin;
+        if (click is { } c)
+        {
+            if (c.Y < work.Y || c.Y >= work.Y + work.Height)
+                return new(Math.Clamp(c.X - w / 2, work.X + margin, right), c.Y < work.Y ? work.Y + margin : bottom, w, h);
+            if (c.X < work.X || c.X >= work.X + work.Width)
+                return new(c.X < work.X ? work.X + margin : right, Math.Clamp(c.Y - h / 2, work.Y + margin, bottom), w, h);
+        }
+
         bool top = work.Y > screen.Y && work.Y + work.Height == screen.Y + screen.Height;
         bool left = work.X > screen.X && work.X + work.Width == screen.X + screen.Width;
-        int x = left ? work.X + margin : work.X + work.Width - w - margin;
-        int y = top ? work.Y + margin : work.Y + work.Height - h - margin;
+        int x = left ? work.X + margin : right;
+        int y = top ? work.Y + margin : bottom;
         return new(x, y, w, h);
     }
 

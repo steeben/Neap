@@ -1,5 +1,6 @@
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Runtime.InteropServices;
 using System.Runtime.Versioning;
 using Avalonia;
 using Avalonia.Controls;
@@ -113,7 +114,7 @@ public partial class MainWindow : IDisposable
             return;
         }
         AppLog.Write("mini panel: opened from the notification area");
-        var panel = new MiniPanelWindow { Main = this };
+        var panel = new MiniPanelWindow { Main = this, Click = PointerAt() };
         panel.Closed += (_, _) =>
         {
             _miniClosedAt = panel.ClosedAt;
@@ -123,6 +124,27 @@ public partial class MainWindow : IDisposable
         panel.Show();
         panel.Activate();
     }
+
+    /// <summary>Where the pointer is on the desktop, in physical pixels, or null where that cannot be read.</summary>
+    /// <remarks>
+    /// The icon's click carries no place, and the toolkit has no pointer
+    /// outside its own windows, so Windows is asked. Elsewhere the panel goes
+    /// in the main screen's corner.
+    /// </remarks>
+    private static PixelPoint? PointerAt() =>
+        OperatingSystem.IsWindows() && GetCursorPos(out var at) ? new PixelPoint(at.X, at.Y) : null;
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativePoint
+    {
+        public int X;
+        public int Y;
+    }
+
+    [DllImport("user32.dll")]
+    [return: MarshalAs(UnmanagedType.Bool)]
+    private static extern bool GetCursorPos(out NativePoint point);
+
 
     /// <summary>Draws the icon: the headset's battery, as the person chose, while there is a reading to show, and Neap's glyph otherwise.</summary>
     /// <remarks>See <see cref="TrayBattery.Of"/> for when the battery is drawn.</remarks>

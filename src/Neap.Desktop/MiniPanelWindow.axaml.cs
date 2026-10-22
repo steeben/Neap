@@ -75,6 +75,7 @@ public partial class MiniPanelWindow : Window
             Close();
         };
         SizeChanged += (_, _) => Place();
+        ScalingChanged += (_, _) => Place();
     }
 
     /// <summary>
@@ -90,6 +91,9 @@ public partial class MiniPanelWindow : Window
             if (value is not null) Classes.Set("touch", value.IsTouch);
         }
     }
+
+    /// <summary>Gets where the pointer was when the icon was clicked, in physical pixels, or null when that is not known.</summary>
+    public PixelPoint? Click { get; init; }
 
     /// <summary>Gets when it closed, as a <see cref="Stopwatch"/> timestamp, so the icon's next click can tell whether that click was the one that did it.</summary>
     public long ClosedAt { get; private set; }
@@ -143,16 +147,18 @@ public partial class MiniPanelWindow : Window
         Close();
     }
 
-    /// <summary>Puts the panel in the corner by the notification area, and keeps it there as it grows or shrinks.</summary>
+    /// <summary>Puts the panel by the icon, on the screen the icon was clicked on, and keeps it there as it grows or shrinks.</summary>
     private void Place()
     {
-        if (Screens.Primary is not { } screen || Bounds.Height <= 0) return;
+        var clicked = Click is { } click ? Screens.ScreenFromPoint(click) : null;
+        if ((clicked ?? Screens.Primary) is not { } screen || Bounds.Height <= 0) return;
         double scale = RenderScaling;
+        (int, int)? at = clicked is not null && Click is { } c ? (c.X, c.Y) : null;
         var box = MiniPanel.Place(Of(screen.Bounds), Of(screen.WorkingArea),
-            (int)Math.Ceiling(Bounds.Width * scale), (int)Math.Ceiling(Bounds.Height * scale), (int)Math.Round(EdgeGap * scale));
+            (int)Math.Ceiling(Bounds.Width * scale), (int)Math.Ceiling(Bounds.Height * scale), (int)Math.Round(EdgeGap * scale), at);
         MaxHeight = box.Height / scale;
-        var at = new PixelPoint(box.X, box.Y);
-        if (Position != at) Position = at;
+        var position = new PixelPoint(box.X, box.Y);
+        if (Position != position) Position = position;
 
         static Box Of(PixelRect rect) => new(rect.X, rect.Y, rect.Width, rect.Height);
     }
