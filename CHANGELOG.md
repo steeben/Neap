@@ -15,8 +15,9 @@ and date.
 
 - The app is called Turt, with a new turtle logo for its window, its
   notification-area icon and its program icon. It checks for updates in the
-  steeben/Neap fork, and its downloads are named Turt-version-win-x64.zip with
-  Turt.exe inside. Its settings stay where they were.
+  steeben/Turt repository, and its downloads are named
+  Turt-version-win-x64.zip with Turt.exe inside. Its settings stay where they
+  were.
 
 ### Added
 
