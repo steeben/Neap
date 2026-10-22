@@ -8,17 +8,17 @@
   either in its corner.
 - **Chosen:** a choice in Settings between Neap's glyph, a one-colour
   battery, the number, and a headset with a battery or the number in its
-  corner, the battery by default, with a low level (5 to 50%, 20% to start)
+  corner, the headset with the number by default, with a low level (5 to 50%, 20% to start)
   at which any of them turns red. The batteries show a bolt while charging.
   The headset styles show a faint, struck-through headset while it is known
   to be disconnected; otherwise, with no reading, the icon is Neap's glyph.
 - **Why:** how much charge is left is what the icon is glanced at for, and
   a tooltip needs a hover. One colour matches the other icons by the clock,
   so red stands out only when it means something; people differ on what
-  counts as low, so the level is theirs. A number is exact but busier, so
-  it is offered rather than the default. The headset styles say whose
+  counts as low, so the level is theirs. The headset styles say whose
   battery it is among other icons by the clock, and can say "disconnected"
-  at a glance, which a battery alone cannot.
+  at a glance, which a battery alone cannot; with the number, the charge
+  is exact, so that is the default.
 - **Revisit if:** the number is hard to read at 100% scale, or people ask
   for the colour battery.
 

@@ -123,10 +123,11 @@ public sealed class AppSettings
 
     /// <summary>What the notification-area icon shows: Neap's glyph, or the headset's battery in one of four styles; see <see cref="TrayIconStyle"/>.</summary>
     /// <remarks>
-    /// The battery by default: how much charge is left is the question the
-    /// icon is most often looked at for.
+    /// The headset with its charge as a number by default: how much charge
+    /// is left is the question the icon is most often looked at for, and the
+    /// headset says whose charge it is and when it is disconnected.
     /// </remarks>
-    [JsonPropertyName("tray_icon")] public TrayIconStyle TrayIcon { get; set; } = TrayIconStyle.Battery;
+    [JsonPropertyName("tray_icon")] public TrayIconStyle TrayIcon { get; set; } = TrayIconStyle.HeadsetPercentage;
 
     /// <summary>The charge, as a percentage, at and below which the battery on the icon turns red.</summary>
     [JsonPropertyName("tray_warn_at")] public int TrayWarnAt { get; set; } = TrayBattery.DefaultWarnAt;
