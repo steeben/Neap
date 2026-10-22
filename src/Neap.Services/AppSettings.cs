@@ -108,9 +108,6 @@ public sealed class AppSettings
     /// </remarks>
     [JsonPropertyName("tray_icon")] public TrayIconStyle TrayIcon { get; set; } = TrayIconStyle.HeadsetPercentage;
 
-    /// <summary>The charge, as a percentage, at and below which the battery on the icon turns red.</summary>
-    [JsonPropertyName("tray_warn_at")] public int TrayWarnAt { get; set; } = TrayBattery.DefaultWarnAt;
-
     /// <summary>Whether Neap asks GitHub once a day for a newer version.</summary>
     /// <remarks>
     /// On by default: an app that never says it is out of date leaves people

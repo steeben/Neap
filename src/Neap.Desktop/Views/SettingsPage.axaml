@@ -131,28 +131,6 @@
                         </StackPanel>
                     </c:SettingsCard.Below>
                 </c:SettingsCard>
-                <!-- Only there while the icon shows the battery. -->
-                <c:SettingsCard
-                    x:Name="TrayWarnCard"
-                    loc:Uid.Value="Settings_TrayWarnAt"
-                    Icon="{StaticResource IconWarning}">
-                    <StackPanel Classes="gaprow">
-                        <Slider
-                            x:Name="TrayWarnSlider"
-                            loc:Uid.Value="Settings_TrayWarnSlider"
-                            Width="160"
-                            VerticalAlignment="Center"
-                            IsSnapToTickEnabled="True"
-                            LargeChange="10"
-                            SmallChange="5"
-                            TickFrequency="5"
-                            Theme="{StaticResource NeapSlider}" />
-                        <TextBlock
-                            x:Name="TrayWarnText"
-                            MinWidth="40"
-                            VerticalAlignment="Center" />
-                    </StackPanel>
-                </c:SettingsCard>
             </StackPanel>
 
             <TextBlock loc:Uid.Value="Settings_DiagnosticsHeading" Classes="sectionheader" />

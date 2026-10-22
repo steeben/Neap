@@ -37,8 +37,6 @@ public partial class SettingsPage : UserControl
         MiniCard.IsVisible = TrayAvailability.Exists;
         TrayIconCard.IsVisible = TrayAvailability.Exists;
         NeapControls.AsGroup(TrayIconOptions);
-        TrayWarnSlider.Minimum = TrayBattery.MinWarnAt;
-        TrayWarnSlider.Maximum = TrayBattery.MaxWarnAt;
 
         _painting = true;
         MiniPanelSwitch.IsChecked = AppSettings.Current.MiniPanel;
@@ -75,16 +73,6 @@ public partial class SettingsPage : UserControl
         TrayIconPercentage.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconPercentage, TrayIconStyle.Percentage);
         TrayIconHeadsetBattery.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconHeadsetBattery, TrayIconStyle.HeadsetBattery);
         TrayIconHeadsetPercentage.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconHeadsetPercentage, TrayIconStyle.HeadsetPercentage);
-        TrayWarnSlider.ValueChanged += (_, _) =>
-        {
-            if (_painting) return;
-            int level = (int)TrayWarnSlider.Value;
-            if (level == AppSettings.Current.TrayWarnAt) return;
-            AppSettings.Update(s => s.TrayWarnAt = level);
-            AppLog.Write($"notification area: the battery turns red at {level}%");
-            PaintTrayIcon();
-            (TopLevel.GetTopLevel(this) as MainWindow)?.TrayIconSettingChanged();
-        };
 
         CheckForUpdates.IsCheckedChanged += (_, _) =>
         {
@@ -169,7 +157,7 @@ public partial class SettingsPage : UserControl
         NeapCard.RowSpacing = beside ? 0 : _stackedGap;
     }
 
-    /// <summary>Ticks what the icon shows, sets the warning level, and shows the level only while the icon shows the battery.</summary>
+    /// <summary>Ticks what the icon shows.</summary>
     private void PaintTrayIcon()
     {
         var settings = AppSettings.Current;
@@ -180,10 +168,7 @@ public partial class SettingsPage : UserControl
         TrayIconPercentage.IsChecked = settings.TrayIcon == TrayIconStyle.Percentage;
         TrayIconHeadsetBattery.IsChecked = settings.TrayIcon == TrayIconStyle.HeadsetBattery;
         TrayIconHeadsetPercentage.IsChecked = settings.TrayIcon == TrayIconStyle.HeadsetPercentage;
-        TrayWarnSlider.Value = Math.Clamp(settings.TrayWarnAt, TrayBattery.MinWarnAt, TrayBattery.MaxWarnAt);
         _painting = painting;
-        TrayWarnText.Text = Strings.Format("Settings_TrayWarnLevel", (int)TrayWarnSlider.Value);
-        TrayWarnCard.IsVisible = TrayAvailability.Exists && settings.TrayIcon != TrayIconStyle.Logo;
     }
 
     /// <summary>Keeps the person's choice of what the icon shows, and draws the icon again.</summary>

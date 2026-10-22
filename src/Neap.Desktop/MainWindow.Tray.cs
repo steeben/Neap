@@ -131,7 +131,7 @@ public partial class MainWindow : IDisposable
         if (_tray is null) return;
         var settings = AppSettings.Current;
         var headset = AppServices.Headset;
-        var battery = TrayBattery.Of(headset.Status, headset.Battery, settings.TrayIcon, settings.TrayWarnAt, TrayBatteryPicture.Steps(settings.TrayIcon));
+        var battery = TrayBattery.Of(headset.Status, headset.Battery, settings.TrayIcon, TrayBatteryPicture.Steps(settings.TrayIcon));
         if (_trayDrawn == (battery, _taskbarLight)) return;
         _trayDrawn = (battery, _taskbarLight);
         _tray.Icon = battery is { } drawn
@@ -163,7 +163,7 @@ public partial class MainWindow : IDisposable
             PaintTrayPicture();
         });
 
-    /// <summary>Draws the icon again when what it shows, or the warning level, is changed.</summary>
+    /// <summary>Draws the icon again when what it shows is changed.</summary>
     public void TrayIconSettingChanged() => PaintTrayPicture();
 
     /// <summary>
