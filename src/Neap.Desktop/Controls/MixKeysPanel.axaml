@@ -30,6 +30,9 @@
                 <c:SettingsCard x:Name="CentreRow" loc:Uid.Value="Mix_CentreRow">
                     <Button x:Name="CentreKey" MinWidth="190" />
                 </c:SettingsCard>
+                <c:SettingsCard x:Name="MiniRow" loc:Uid.Value="Mix_MiniRow">
+                    <Button x:Name="MiniKey" MinWidth="190" />
+                </c:SettingsCard>
                 <c:SettingsCard loc:Uid.Value="Mix_KeysResetRow">
                     <Button x:Name="KeysReset" loc:Uid.Value="Mix_KeysReset" />
                 </c:SettingsCard>

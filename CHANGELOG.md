@@ -35,10 +35,13 @@ and date.
   to instead. It is on by default, and Windows only.
 - The mini panel can be drawn as frosted glass, after the Frosty Glass
   taskbar theme: the desktop shows through it, blurred, under a tint and a
-  soft edge. Settings chooses between it and the standard look. On Windows 10
-  and Linux, and with Windows' transparency effects off, the glass is solid.
+  soft edge, and it fades in and out as the standard look does. Settings
+  chooses between it and the standard look. On Linux the glass is solid.
 - Settings has a choice of theme: as the system is set, light, or dark. The
   mini panel follows it too.
+- A keyboard shortcut opens and closes the mini panel, Ctrl + Alt + M by
+  default, beside the mix's shortcuts and changed the same way. It opens the
+  panel by the clock, on the screen whose taskbar holds it.
 - The mini panel has spatial sound, between noise cancellation and the
   equaliser: Off, Windows Sonic or Dolby Atmos, whichever the system offers. It
   is left out where the system has none, and it stays when the headset is away,

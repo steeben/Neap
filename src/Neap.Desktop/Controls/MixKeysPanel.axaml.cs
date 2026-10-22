@@ -7,8 +7,8 @@ using Avalonia.Threading;
 namespace Neap.Desktop.Controls;
 
 /// <summary>
-/// The keys that move the game and chat mix from anywhere, and a way to
-/// change them.
+/// The keys that move the game and chat mix or open the mini panel from
+/// anywhere, and a way to change them.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -49,6 +49,7 @@ public partial class MixKeysPanel : UserControl
         Capture(GameKey, MixKey.TowardGame);
         Capture(ChatKey, MixKey.TowardChat);
         Capture(CentreKey, MixKey.Balanced);
+        Capture(MiniKey, MixKey.MiniPanel);
     }
 
     protected override void OnLoaded(RoutedEventArgs e)
@@ -144,6 +145,7 @@ public partial class MixKeysPanel : UserControl
         Show(GameKey, GameRow, MixKey.TowardGame);
         Show(ChatKey, ChatRow, MixKey.TowardChat);
         Show(CentreKey, CentreRow, MixKey.Balanced);
+        Show(MiniKey, MiniRow, MixKey.MiniPanel);
 
         _painting = true;
         KeysOn.IsChecked = AppServices.Hotkeys.Enabled;
