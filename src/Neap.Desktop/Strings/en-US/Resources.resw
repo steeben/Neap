@@ -463,7 +463,7 @@
     <value>What the icon by the clock shows</value>
   </data>
   <data name="Settings_TrayIconLogo.Content" xml:space="preserve">
-    <value>Neap</value>
+    <value>Turt</value>
   </data>
   <data name="Settings_TrayIconBattery.Content" xml:space="preserve">
     <value>Battery</value>
