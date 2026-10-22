@@ -1,8 +1,8 @@
 [Desktop Entry]
 Type=Application
-Name=Neap
+Name=Turt
 Comment=Control the Turtle Beach Stealth Pro II
-Exec=Neap
+Exec=Turt
 Icon=neap
 Terminal=false
 Categories=AudioVideo;Audio;Settings;

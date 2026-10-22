@@ -1,5 +1,5 @@
 #!/bin/bash
-# Builds Neap's AppImage from the app published for Linux.
+# Builds Turt's AppImage from the app published for Linux.
 #
 #   build-appimage.sh <published folder> <version> [output folder]
 #
@@ -22,8 +22,8 @@ appdir="$work/Neap.AppDir"
 mkdir -p "$appdir/usr/bin" "$appdir/usr/share/doc/neap"
 cp -r "$publish"/. "$appdir/usr/bin/"
 
-# The program is called Neap, so that is what the desktop's process list shows.
-mv "$appdir/usr/bin/Neap.Desktop" "$appdir/usr/bin/Neap"
+# The program is called Turt, so that is what the desktop's process list shows.
+mv "$appdir/usr/bin/Neap.Desktop" "$appdir/usr/bin/Turt"
 
 # What a person needs to read, and the rule that lets them use the headset.
 cp "$here/70-neap.rules" "$root/LICENSE" "$root/THIRD-PARTY-NOTICES.txt" "$appdir/usr/share/doc/neap/"
@@ -33,7 +33,7 @@ cp "$here/neap.desktop" "$here/neap.png" "$appdir/"
 cp "$here/neap.png" "$appdir/.DirIcon"
 
 mkdir -p "$out"
-image="$out/Neap-$version-x86_64.AppImage"
+image="$out/Turt-$version-x86_64.AppImage"
 ARCH=x86_64 "$tool" --appimage-extract-and-run "$appdir" "$image"
 (cd "$out" && sha256sum "$(basename "$image")" > "$(basename "$image").sha256")
 echo "built $image"

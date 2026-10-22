@@ -25,16 +25,16 @@ namespace Neap.Core.Updates;
 public sealed partial record Release(Version Version, Uri Page, Uri? Zip, Uri? Hash, string Notes)
 {
     /// <summary>Where GitHub describes the latest release, leaving out drafts and pre-releases.</summary>
-    public static Uri Latest { get; } = new("https://api.github.com/repos/lykosapps/Neap/releases/latest");
+    public static Uri Latest { get; } = new("https://api.github.com/repos/steeben/Neap/releases/latest");
 
     /// <summary>Where every link in a release must start: Neap's own repository, so a release can't name another's files.</summary>
-    private const string Repository = "/lykosapps/Neap/";
+    private const string Repository = "/steeben/Neap/";
 
     /// <summary>The zip's file name, as the release workflow names it.</summary>
     public string ZipName => ZipNameFor(Version);
 
     private static string ZipNameFor(Version version) =>
-        string.Create(CultureInfo.InvariantCulture, $"Neap-{version.ToString(3)}-win-x64.zip");
+        string.Create(CultureInfo.InvariantCulture, $"Turt-{version.ToString(3)}-win-x64.zip");
 
     /// <summary>A version as Neap shows it: a release's three numbers, or a test build's four.</summary>
     /// <remarks>A test build carries its tag's fourth number, which tells a report from a test build apart from one from the release.</remarks>

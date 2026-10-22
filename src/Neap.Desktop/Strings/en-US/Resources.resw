@@ -58,16 +58,16 @@
     <value>S</value>
   </data>
   <data name="Main_TrayOpen" xml:space="preserve">
-    <value>Open Neap</value>
+    <value>Open Turt</value>
   </data>
   <data name="Main_TrayMini" xml:space="preserve">
     <value>Mini panel</value>
   </data>
   <data name="Mini_Open.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
-    <value>Open Neap</value>
+    <value>Open Turt</value>
   </data>
   <data name="Mini_Open.[using:Microsoft.UI.Xaml.Controls]ToolTipService.ToolTip" xml:space="preserve">
-    <value>Open Neap</value>
+    <value>Open Turt</value>
   </data>
   <data name="Mini_Section.What" xml:space="preserve">
     <value>Microphone, noise cancellation and equaliser</value>
@@ -79,7 +79,7 @@
     <value>Equaliser</value>
   </data>
   <data name="Mini_ChooseApps.Content" xml:space="preserve">
-    <value>Choose in Neap</value>
+    <value>Choose in Turt</value>
   </data>
   <data name="Main_TrayQuit" xml:space="preserve">
     <value>Quit</value>
@@ -352,7 +352,7 @@
     <value>Keep high-resolution audio</value>
   </data>
   <data name="Device_KeepRing.Description" xml:space="preserve">
-    <value>When an app starts using the mic, the Charging Dock drops out of high resolution and its ring turns white. Neap restores it a moment later. You may hear a short gap.</value>
+    <value>When an app starts using the mic, the Charging Dock drops out of high resolution and its ring turns white. Turt restores it a moment later. You may hear a short gap.</value>
   </data>
   <data name="Device_HeadsetOutput.Header" xml:space="preserve">
     <value>Headset output</value>
@@ -490,7 +490,7 @@
     <value>Nothing plugged in</value>
   </data>
   <data name="State_WhatUnreachable" xml:space="preserve">
-    <value>Neap can't reach your headset's settings right now. Sound, volume and the headset's own buttons still work.</value>
+    <value>Turt can't reach your headset's settings right now. Sound, volume and the headset's own buttons still work.</value>
   </data>
   <data name="State_FixUnreachable" xml:space="preserve">
     <value>Switch the headset off and on again to bring everything back.</value>
@@ -946,7 +946,7 @@
     <value>Plug in its Charging Dock, its USB Transmitter or its USB-C cable, then switch the headset on.</value>
   </data>
   <data name="Access_Title" xml:space="preserve">
-    <value>Neap isn't allowed to use the headset</value>
+    <value>Turt isn't allowed to use the headset</value>
   </data>
   <data name="Access_Message" xml:space="preserve">
     <value>Your system keeps the headset's controls to itself until it is told otherwise. Allowing it takes your password once, and changes nothing else.</value>
@@ -1256,8 +1256,8 @@
     <comment>{0} is the app's name.</comment>
   </data>
   <data name="Update_DidNotStart" xml:space="preserve">
-    <value>Version {0} was installed but wouldn't open. Start Neap again, and if it still won't open, download it again.</value>
-    <comment>{0} is a version number, such as 0.3.0. "Neap" is the app's name.</comment>
+    <value>Version {0} was installed but wouldn't open. Start Turt again, and if it still won't open, download it again.</value>
+    <comment>{0} is a version number, such as 0.3.0. "Turt" is the app's name.</comment>
   </data>
   <data name="Dialog_Close" xml:space="preserve">
     <value>Close</value>
@@ -1306,7 +1306,7 @@
     <comment>{0} is the system's reason, such as a full disk.</comment>
   </data>
   <data name="Settings_MapHeadset.Description" xml:space="preserve">
-    <value>Neap has only been tested with the Stealth Pro II.</value>
+    <value>Turt has only been tested with the Stealth Pro II.</value>
   </data>
   <data name="Settings_MapHeadset.Header" xml:space="preserve">
     <value>Help support another headset</value>
@@ -1357,10 +1357,10 @@
     <value>Recording only listens. It doesn't change anything on your headset, and the file leaves out its serial number and anything else that identifies you.</value>
   </data>
   <data name="Found_Title" xml:space="preserve">
-    <value>What Neap found on your headset</value>
+    <value>What Turt found on your headset</value>
   </data>
   <data name="Found_Note" xml:space="preserve">
-    <value>Found means Neap can see it, not that it works with Neap yet.</value>
+    <value>Found means Turt can see it, not that it works with Turt yet.</value>
   </data>
   <data name="Found_FoundHeading" xml:space="preserve">
     <value>Found</value>
@@ -1378,7 +1378,7 @@
     <value>Nothing</value>
   </data>
   <data name="Found_NoAnswer" xml:space="preserve">
-    <value>Your headset didn't answer, so Neap can't talk to it yet. Sending the recording still helps.</value>
+    <value>Your headset didn't answer, so Turt can't talk to it yet. Sending the recording still helps.</value>
   </data>
   <data name="Found_Send" xml:space="preserve">
     <value>Report on GitHub</value>
@@ -1483,7 +1483,7 @@
     <value>Noise cancellation: cancelling, transparency and off</value>
   </data>
   <data name="Mode_NoiseCycleNeedsApp" xml:space="preserve">
-    <value>Works while Neap is running. Otherwise the button turns noise cancellation on and off.</value>
+    <value>Works while Turt is running. Otherwise the button turns noise cancellation on and off.</value>
   </data>
   <data name="Equaliser_Mode.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
     <value>Shape the sound by</value>
@@ -1689,7 +1689,7 @@
   </data>
   <data name="Spatial_Unrecognised" xml:space="preserve">
     <value>Another format</value>
-    <comment>A spatial sound format is on, set outside Neap, that Neap does not know by name.</comment>
+    <comment>A spatial sound format is on, set outside Turt, that Turt does not know by name.</comment>
   </data>
   <data name="Spatial_WindowsSonic" xml:space="preserve">
     <value>Windows Sonic</value>

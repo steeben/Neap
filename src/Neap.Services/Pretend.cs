@@ -164,7 +164,7 @@ public static class Pretend
 
     /// <summary>The notes <see cref="UpdateFlag"/>'s release carries, shaped as the release workflow writes them.</summary>
     private const string SampleNotes = """
-        **A sample release.** Its notes read as a real one's do, with a [link](https://github.com/lykosapps/Neap/releases).
+        **A sample release.** Its notes read as a real one's do, with a [link](https://github.com/steeben/Neap/releases).
 
         ### Install on Windows
 
@@ -191,9 +191,9 @@ public static class Pretend
     /// </summary>
     public static Release? Release { get; } = Active && Given(UpdateFlag)
         ? new Release(new Version(9, 9, 9),
-            new Uri("https://github.com/lykosapps/Neap/releases/latest"),
-            new Uri("https://github.com/lykosapps/Neap/releases/download/v9.9.9/Neap-9.9.9-win-x64.zip"),
-            new Uri("https://github.com/lykosapps/Neap/releases/download/v9.9.9/Neap-9.9.9-win-x64.zip.sha256"),
+            new Uri("https://github.com/steeben/Neap/releases/latest"),
+            new Uri("https://github.com/steeben/Neap/releases/download/v9.9.9/Turt-9.9.9-win-x64.zip"),
+            new Uri("https://github.com/steeben/Neap/releases/download/v9.9.9/Turt-9.9.9-win-x64.zip.sha256"),
             SampleNotes)
         : null;
 

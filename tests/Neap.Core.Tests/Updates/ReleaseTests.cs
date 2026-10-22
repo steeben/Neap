@@ -12,17 +12,17 @@ public class ReleaseTests
         bool draft = false,
         bool prerelease = false,
         string host = "github.com",
-        string repository = "lykosapps/Neap",
+        string repository = "steeben/Neap",
         string? zipName = null,
         string? body = "## Notes\n\n- It does a thing.")
     {
         string version = tag.TrimStart('v');
-        zipName ??= $"Neap-{version}-win-x64.zip";
+        zipName ??= $"Turt-{version}-win-x64.zip";
         string download = $"https://{host}/{repository}/releases/download/{tag}";
         return $$"""
             {
               "tag_name": "{{tag}}",
-              "html_url": "https://github.com/lykosapps/Neap/releases/tag/{{tag}}",
+              "html_url": "https://github.com/steeben/Neap/releases/tag/{{tag}}",
               "draft": {{(draft ? "true" : "false")}},
               "prerelease": {{(prerelease ? "true" : "false")}},
               "body": {{(body is null ? "null" : System.Text.Json.JsonSerializer.Serialize(body))}},
@@ -40,10 +40,10 @@ public class ReleaseTests
         var release = Release.Parse(Json());
 
         Assert.Equal(new Version(0, 3, 0), release.Version);
-        Assert.Equal("Neap-0.3.0-win-x64.zip", release.ZipName);
-        Assert.EndsWith("/v0.3.0/Neap-0.3.0-win-x64.zip", release.Zip?.AbsoluteUri, StringComparison.Ordinal);
-        Assert.EndsWith("/v0.3.0/Neap-0.3.0-win-x64.zip.sha256", release.Hash?.AbsoluteUri, StringComparison.Ordinal);
-        Assert.Equal("https://github.com/lykosapps/Neap/releases/tag/v0.3.0", release.Page.AbsoluteUri);
+        Assert.Equal("Turt-0.3.0-win-x64.zip", release.ZipName);
+        Assert.EndsWith("/v0.3.0/Turt-0.3.0-win-x64.zip", release.Zip?.AbsoluteUri, StringComparison.Ordinal);
+        Assert.EndsWith("/v0.3.0/Turt-0.3.0-win-x64.zip.sha256", release.Hash?.AbsoluteUri, StringComparison.Ordinal);
+        Assert.Equal("https://github.com/steeben/Neap/releases/tag/v0.3.0", release.Page.AbsoluteUri);
     }
 
     [Theory]
@@ -80,13 +80,13 @@ public class ReleaseTests
     [Fact]
     public void ASystemThatOnlyPointsToTheReleasePageDoesNotNeedTheZip()
     {
-        string noZip = Json(zipName: "Neap-0.3.0-linux-x64.tar.gz");
+        string noZip = Json(zipName: "Turt-0.3.0-linux-x64.tar.gz");
 
         Assert.Throws<FormatException>(() => Release.Parse(noZip));
 
         var release = Release.Parse(noZip, installable: false);
         Assert.Equal(new Version(0, 3, 0), release.Version);
-        Assert.Equal("https://github.com/lykosapps/Neap/releases/tag/v0.3.0", release.Page.AbsoluteUri);
+        Assert.Equal("https://github.com/steeben/Neap/releases/tag/v0.3.0", release.Page.AbsoluteUri);
         Assert.Null(release.Zip);
         Assert.Null(release.Hash);
     }
@@ -94,7 +94,7 @@ public class ReleaseTests
     [Fact]
     public void AReleaseWithoutADownloadIsReadBackAsItWas()
     {
-        var release = Release.Parse(Json(zipName: "Neap-0.3.0-linux-x64.tar.gz"), installable: false);
+        var release = Release.Parse(Json(zipName: "Turt-0.3.0-linux-x64.tar.gz"), installable: false);
 
         Assert.Equal(release, Release.Parse(release.ToJson(), installable: false));
     }
@@ -102,7 +102,7 @@ public class ReleaseTests
     [Fact]
     public void ASystemThatPointsToThePageStillRefusesALinkOutsideNeapsRepository()
     {
-        string elsewhere = Json().Replace("https://github.com/lykosapps/Neap/", "https://github.com/someone/Else/", StringComparison.Ordinal);
+        string elsewhere = Json().Replace("https://github.com/steeben/Neap/", "https://github.com/someone/Else/", StringComparison.Ordinal);
 
         Assert.Throws<FormatException>(() => Release.Parse(elsewhere, installable: false));
     }
@@ -155,8 +155,8 @@ public class ReleaseTests
 
     [Theory]
     [InlineData("someone/else")]
-    [InlineData("lykosapps/Neapx")]
-    [InlineData("lykosapps/Neap/../Other")]
+    [InlineData("steeben/Neapx")]
+    [InlineData("steeben/Neap/../Other")]
     public void ADownloadFromAnotherRepositoryIsRefused(string repository)
     {
         Assert.Throws<FormatException>(() => Release.Parse(Json(repository: repository)));
@@ -165,7 +165,7 @@ public class ReleaseTests
     [Fact]
     public void AReleasePageInAnotherRepositoryIsRefused()
     {
-        string other = Json().Replace("\"html_url\": \"https://github.com/lykosapps/Neap/",
+        string other = Json().Replace("\"html_url\": \"https://github.com/steeben/Neap/",
             "\"html_url\": \"https://github.com/someone/else/", StringComparison.Ordinal);
 
         Assert.Throws<FormatException>(() => Release.Parse(other));
@@ -175,13 +175,13 @@ public class ReleaseTests
     public void ARepositoryNameInADifferentCaseIsStillNeaps()
     {
         // GitHub treats the two as the same repository.
-        Assert.Equal(new Version(0, 3, 0), Release.Parse(Json(repository: "LykosApps/neap")).Version);
+        Assert.Equal(new Version(0, 3, 0), Release.Parse(Json(repository: "Steeben/neap")).Version);
     }
 
     [Fact]
     public void AReleaseWithoutTheZipForItsVersionIsRefused()
     {
-        Assert.Throws<FormatException>(() => Release.Parse(Json(tag: "v0.3.0", zipName: "Neap-0.2.0-win-x64.zip")));
+        Assert.Throws<FormatException>(() => Release.Parse(Json(tag: "v0.3.0", zipName: "Turt-0.2.0-win-x64.zip")));
     }
 
     [Theory]
@@ -198,12 +198,12 @@ public class ReleaseTests
     public void TheHashFileGivesTheHashInLowerCase()
     {
         var release = Release.Parse(Json());
-        Assert.Equal(Hash, release.HashFrom($"{Hash.ToUpperInvariant()}  Neap-0.3.0-win-x64.zip\r\n"));
+        Assert.Equal(Hash, release.HashFrom($"{Hash.ToUpperInvariant()}  Turt-0.3.0-win-x64.zip\r\n"));
     }
 
     [Theory]
-    [InlineData(Hash + "  Neap-0.2.0-win-x64.zip")]
-    [InlineData("abc  Neap-0.3.0-win-x64.zip")]
+    [InlineData(Hash + "  Turt-0.2.0-win-x64.zip")]
+    [InlineData("abc  Turt-0.3.0-win-x64.zip")]
     [InlineData(Hash)]
     [InlineData("")]
     public void AHashFileForAnythingElseIsRefused(string file)
