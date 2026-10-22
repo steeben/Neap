@@ -13,6 +13,10 @@ and date.
 
 ### Added
 
+- A "Dark while disconnected" switch under the Charging Dock's lights turns
+  its status ring off when the headset disconnects, so it doesn't blink white
+  for five minutes, and puts it back at its brightness when the headset
+  reconnects, even if Neap was closed in between. Off by default.
 - The mini panel has spatial sound, between noise cancellation and the
   equaliser: Off, Windows Sonic or Dolby Atmos, whichever the system offers. It
   is left out where the system has none, and it stays when the headset is away,

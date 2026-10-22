@@ -437,6 +437,67 @@ public sealed class HeadsetService : IDisposable
         Raise();
     }
 
+    // -- the dock's status ring while the headset is gone ------------------
+
+    /// <summary>Gets or sets whether the Charging Dock's status ring is turned down while the headset is gone; see <see cref="DockRingDim"/>.</summary>
+    public bool DimDockRing
+    {
+        get => _dimRing;
+        set
+        {
+            _dimRing = value;
+            AppSettings.Update(settings => settings.DimDockRing = value);
+        }
+    }
+
+    private volatile bool _dimRing = AppSettings.Current.DimDockRing;
+
+    /// <summary>Turns the status ring down as the headset goes from the dock, keeping the brightness to bring back.</summary>
+    /// <remarks>
+    /// Written through the dock as the last thing before letting it go: with
+    /// the headset gone, the dock is all there is to write through. The
+    /// brightness is kept before the write, so a write that lands and a quit
+    /// straight after still leave something to bring back.
+    /// </remarks>
+    private void DarkenRing(HeadsetClient client, bool onDock)
+    {
+        if (_readOnly) return;
+        int? now = TryGetNumberByKey(DockRingDim.Key, out int brightness) ? brightness : null;
+        if (DockRingDim.ToKeep(_dimRing, onDock, now, AppSettings.Current.DockRingKept) is not int keep) return;
+        AppSettings.Update(settings => settings.DockRingKept = keep);
+        try
+        {
+            client.Set(OnTheWire(DockRingDim.Key), DockRingDim.Dark, HeadsetModels.CheckedAs(Model, DockRingDim.Key));
+            AppLog.Write($"dock ring: the headset went quiet, so the status ring was turned down from {keep}, to come back when the headset does");
+        }
+        catch (Exception ex) when (ex is TransportException or ArgumentException)
+        {
+            AppLog.Write($"dock ring: could not turn the status ring down as the headset went: {ex.Message}");
+        }
+    }
+
+    /// <summary>Puts back the status ring's brightness kept as the headset went, once it answers on the dock again.</summary>
+    /// <remarks>
+    /// The kept value is let go only after the write, so a write that fails
+    /// is tried again on the next connection.
+    /// </remarks>
+    private void BringRingBack(HeadsetClient client)
+    {
+        if (_readOnly || AppSettings.Current.DockRingKept is not int kept
+            || !TryGetNumberByKey(DockRingDim.Key, out int now)) return;
+        if (DockRingDim.ToRestore(kept, now) is int back)
+        {
+            client.Set(OnTheWire(DockRingDim.Key), back, HeadsetModels.CheckedAs(Model, DockRingDim.Key));
+            Store(DockRingDim.Key, back, hold: false);
+            AppLog.Write($"dock ring: the headset is back, so the status ring was turned up to {back} again");
+        }
+        else
+        {
+            AppLog.Write($"dock ring: the headset is back with the status ring at {now}, so it was left there rather than set to {kept}");
+        }
+        AppSettings.Update(settings => settings.DockRingKept = null);
+    }
+
     // -- work on the owner thread ------------------------------------------
 
     /// <summary>
@@ -615,6 +676,7 @@ public sealed class HeadsetService : IDisposable
                     carrying = held?.Name ?? adapter;
                     product = held?.Product ?? client.ProductId.ToString("X4", CultureInfo.InvariantCulture);
                     elsewhere = held is not null && !held.Value.Here;
+                    if (route == Route.ChargingDock && !elsewhere) BringRingBack(client);
 
                     // Ask on the way in, not only when it changes. The state
                     // this catches is one the app can start up already in.
@@ -692,6 +754,7 @@ public sealed class HeadsetService : IDisposable
                     if (unanswered >= 2)
                     {
                         primed = false;
+                        DarkenRing(client, onDock: route == Route.ChargingDock && !elsewhere);
                         Forget();
                         Unreachable();
 

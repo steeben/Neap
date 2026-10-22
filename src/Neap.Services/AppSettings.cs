@@ -20,7 +20,8 @@ namespace Neap.Services;
 /// control the headset has no place for, the parametric adjustments
 /// behind a preset, of which its slot holds only the result, which
 /// preset an edited curve came from, whether to keep the Charging Dock's
-/// status ring purple, and whether and when to look for a newer version and
+/// status ring purple, whether to darken it while the headset is gone and
+/// the brightness to bring back, and whether and when to look for a newer version and
 /// whether its banner has been put away.
 /// </para>
 /// <para>
@@ -82,6 +83,21 @@ public sealed class AppSettings
     /// in the sound, and for telling the dock's behaviour from Neap's.
     /// </remarks>
     [JsonPropertyName("keep_ring_purple")] public bool KeepRingPurple { get; set; } = true;
+
+    /// <summary>Whether the Charging Dock's status ring is turned down to nothing while the headset is gone.</summary>
+    /// <remarks>
+    /// Off by default: it writes to the headset on every disconnect, and
+    /// whether the dock takes the write with the headset already gone is
+    /// still to be confirmed. See <see cref="Core.Settings.DockRingDim"/>.
+    /// </remarks>
+    [JsonPropertyName("dim_dock_ring")] public bool DimDockRing { get; set; }
+
+    /// <summary>The status ring's brightness before it was turned down, or null while it is not.</summary>
+    /// <remarks>
+    /// Kept here rather than only in memory, so that a quit or a crash while
+    /// the headset is away still brings the ring back when it returns.
+    /// </remarks>
+    [JsonPropertyName("dock_ring_kept")] public int? DockRingKept { get; set; }
 
     /// <summary>Whether the system's microphone mute was last set by following the headset, rather than by the person.</summary>
     /// <remarks>

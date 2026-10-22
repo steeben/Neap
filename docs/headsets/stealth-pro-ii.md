@@ -96,6 +96,7 @@ system tried with a real headset.
 | Voice prompt for each transmitter (none, 1–4) | Listed | Unknown: not yet found | Missing | — | — | Unknown | Turtle Beach's article lists it under Charging Hub. Find where it's kept. |
 | Voice prompt volume | Listed; mobile app only since June 2026 | Yes | Has | Confirmed | Confirmed | `0x2D0` | Swarm II's desktop app has had it switched off since 1.0.0.47. |
 | Dock light brightness, two lights | Listed | Yes | Has | Confirmed | Confirmed | `0x401`, `0x402` | — |
+| Dock status ring dark while disconnected | Not listed | Probably, if the dock takes a write with the headset gone | Has, test | Untried | Untried | `0x401` | Switch the headset off on the dock with the switch on, and check the log and the ring. |
 | Firmware updates | Listed | Yes, but Neap never writes firmware | Not planned | — | — | — | Neap never writes firmware. |
 
 ### Swarm II's own settings
@@ -142,6 +143,10 @@ system tried with a real headset.
 Newest first. [FINDINGS.md](../../FINDINGS.md) has every key and how each
 was confirmed.
 
+- 2026-10-22 — A status ring set to 0 stays dark through the dock's
+  blinking after the headset switches off (owner). The switch that does this
+  on each disconnect writes through the dock after the headset has gone
+  quiet; whether the dock takes it then is untried.
 - 2026-10-17 — Turtle Beach's PC article read: the feature list above. It
   adds a per-transmitter voice prompt (none, 1–4) and lists wake on motion in
   the desktop app.

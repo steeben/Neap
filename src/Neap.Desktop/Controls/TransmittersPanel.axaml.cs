@@ -196,6 +196,7 @@ public partial class TransmittersPanel : UserControl
         {
             panel.Children.Add(Light("led_brightness_1", "Device_DockStatusName", "Device_DockStatusNote"));
             panel.Children.Add(Light("led_brightness_2", "Device_DockRingName", "Device_DockRingNote"));
+            panel.Children.Add(DimRing());
         }
         else
         {
@@ -214,6 +215,24 @@ public partial class TransmittersPanel : UserControl
         BorderThickness = new Thickness(0),
         Padding = new Thickness(0, Space.S),
     };
+
+    /// <summary>The switch for turning the status ring down while the headset is gone; see <see cref="DockRingDim"/>.</summary>
+    private static SettingsCard DimRing()
+    {
+        var toggle = NeapControls.Switch();
+        toggle.IsChecked = AppServices.Headset.DimDockRing;
+        toggle.IsCheckedChanged += (_, _) => AppServices.Headset.DimDockRing = toggle.IsChecked == true;
+        AutomationProperties.SetAutomationId(toggle, "DimDockRing");
+        return new SettingsCard
+        {
+            Header = Strings.Get("Device_DimDockRingName"),
+            Description = Strings.Get("Device_DimDockRingNote"),
+            Content = toggle,
+            Background = Avalonia.Media.Brushes.Transparent,
+            BorderThickness = new Thickness(0),
+            Padding = new Thickness(0, Space.S),
+        };
+    }
 
     private Border BluetoothPanel()
     {

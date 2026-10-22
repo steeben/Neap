@@ -315,6 +315,12 @@
   <data name="Device_DockStatusName" xml:space="preserve">
     <value>Status ring</value>
   </data>
+  <data name="Device_DimDockRingNote" xml:space="preserve">
+    <value>Turns the status ring off when the headset disconnects, so it doesn't blink, and back on when it reconnects.</value>
+  </data>
+  <data name="Device_DimDockRingName" xml:space="preserve">
+    <value>Dark while disconnected</value>
+  </data>
   <data name="Device_TransmitterLightNote" xml:space="preserve">
     <value>The status light on the transmitter.</value>
   </data>
