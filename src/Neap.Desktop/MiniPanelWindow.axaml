@@ -24,13 +24,10 @@
             <Setter Property="Padding" Value="8,0" />
         </Style>
 
-        <!-- Frosted glass, its colours from Themes/Frosty.axaml: the tint over the blur, or a solid colour where the system gives none. -->
+        <!-- Frosted glass, its colours from Themes/Frosty.axaml: solid until the blurred screen is laid behind it; see Frost. -->
         <Style Selector="Window.frosty Border#Card">
-            <Setter Property="Background" Value="{DynamicResource NeapGlassBrush}" />
-            <Setter Property="CornerRadius" Value="{StaticResource NeapRadiusGlass}" />
-        </Style>
-        <Style Selector="Window.frosty.solid Border#Card">
             <Setter Property="Background" Value="{DynamicResource NeapGlassSolidBrush}" />
+            <Setter Property="CornerRadius" Value="{StaticResource NeapRadiusGlass}" />
         </Style>
         <Style Selector="Window.frosty c|SettingsCard">
             <Setter Property="CornerRadius" Value="{StaticResource NeapRadiusGlassRow}" />

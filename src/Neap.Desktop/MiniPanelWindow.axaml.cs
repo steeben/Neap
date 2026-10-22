@@ -128,8 +128,7 @@ public partial class MiniPanelWindow : Window
         AppServices.Mix.Changed += Paint;
         Paint();
         Place();
-        RoundGlass();
-        if (Motion.Enabled) _ = Fade(0, 1, Lift, 0, Arrive, new CubicEaseOut());
+        if (Motion.Enabled) _ = Fade(0, 1, Rise, 0, Arrive, new CubicEaseOut());
 
         // Focus begins on the dial, on the way to choose chat apps while the dial waits for
         // them, or else on the first thing that can take it. Given without the focus ring,
@@ -159,19 +158,17 @@ public partial class MiniPanelWindow : Window
         AppServices.Headset.StatusChanged -= OnStatus;
         AppServices.Mix.Changed -= Paint;
         StopRechecking();
+        _behind?.Dispose();
         ClosedAt = Stopwatch.GetTimestamp();
     }
 
     private void OnStatus(HeadsetStatus status) => Paint();
 
-    /// <summary>How far the card moves as it fades: not at all over the blur, which stays where the window is and would show where the card had left it.</summary>
-    private double Lift => _blurred ? 0 : Rise;
-
     private async Task FadeAndClose()
     {
         _leaving = true;
         Card.IsHitTestVisible = false;
-        await Fade(1, 0, 0, Lift / 2, Leave, new CubicEaseIn());
+        await Fade(1, 0, 0, Rise / 2, Leave, new CubicEaseIn());
         _left = true;
         Close();
     }
@@ -221,6 +218,7 @@ public partial class MiniPanelWindow : Window
         MaxHeight = box.Height / scale;
         var position = new PixelPoint(box.X, box.Y);
         if (Position != position) Position = position;
+        if (_frosted) Ground(screen.WorkingArea, box);
 
         static Box Of(PixelRect rect) => new(rect.X, rect.Y, rect.Width, rect.Height);
     }

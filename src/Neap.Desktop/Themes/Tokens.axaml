@@ -234,8 +234,8 @@
     <CornerRadius x:Key="NeapRadiusDrawerCard">0,0,12,12</CornerRadius>
     <CornerRadius x:Key="NeapRadiusCardTop">12,12,0,0</CornerRadius>
     <CornerRadius x:Key="NeapRadiusInsetTop">8,8,0,0</CornerRadius>
-    <!-- The mini panel as frosted glass: the corners Windows 11 rounds the window to, and its rows a step inside them. -->
-    <CornerRadius x:Key="NeapRadiusGlass">8</CornerRadius>
+    <!-- The mini panel as frosted glass: the Frosty Glass theme's corners, and its rows a step inside them. -->
+    <CornerRadius x:Key="NeapRadiusGlass">10</CornerRadius>
     <CornerRadius x:Key="NeapRadiusGlassRow">7</CornerRadius>
     <x:Double x:Key="NeapTileMinHeight">96</x:Double>
     <Thickness x:Key="NeapPaddingCard">16</Thickness>

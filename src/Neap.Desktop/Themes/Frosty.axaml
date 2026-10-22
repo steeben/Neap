@@ -11,8 +11,8 @@
 
         The tint is heavier than the taskbar's, since the panel holds text
         and a taskbar mostly icons: text keeps 4.5:1 over the tint even with
-        a white window or a black one behind. Where the system gives no blur,
-        the glass is the solid colour beneath it.
+        a white window or a black one behind. Where the screen behind cannot
+        be read, the glass is the solid colour.
     -->
     <ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
