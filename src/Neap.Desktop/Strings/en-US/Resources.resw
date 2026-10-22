@@ -1482,6 +1482,9 @@
   <data name="Mode_NoiseCycle" xml:space="preserve">
     <value>Noise cancellation: cancelling, transparency and off</value>
   </data>
+  <data name="Mode_NoiseCycleSkipsOff" xml:space="preserve">
+    <value>Noise cancellation: cancelling and transparency</value>
+  </data>
   <data name="Mode_NoiseCycleNeedsApp" xml:space="preserve">
     <value>Works while Neap is running. Otherwise the button turns noise cancellation on and off.</value>
   </data>

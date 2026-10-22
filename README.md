@@ -41,7 +41,7 @@ rebindable.
 Choose noise cancellation, transparency or off. The headset has no
 transparency mode of its own; transparency is noise cancellation at zero,
 which lets the room in. The Mode button steps through all three while Neap
-is running.
+is running, or between noise cancellation and transparency only.
 
 ![The Audio page, with noise control set to noise cancellation and how much of the room it blocks.](docs/screenshots/audio.png)
 

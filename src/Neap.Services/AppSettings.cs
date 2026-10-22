@@ -69,11 +69,15 @@ public sealed class AppSettings
     /// </remarks>
     [JsonPropertyName("noise_blocking")] public int? NoiseBlocking { get; set; }
 
-    /// <summary>Whether a press of the Mode button steps through noise cancellation, transparency and off.</summary>
+    /// <summary>Whether a press of the Mode button steps through noise control, rather than only turning noise cancellation on and off.</summary>
     /// <remarks>
     /// The headset has no such function; see <see cref="Core.Settings.ModeButton"/>.
     /// </remarks>
     [JsonPropertyName("mode_cycles_noise")] public bool ModeCyclesNoise { get; set; }
+
+    /// <summary>Whether the Mode button's cycle steps between noise cancellation and transparency only, skipping off.</summary>
+    /// <remarks>Read with <see cref="ModeCyclesNoise"/>; see <see cref="Core.Settings.ModeButton.CycleOf"/>.</remarks>
+    [JsonPropertyName("mode_cycle_skips_off")] public bool ModeCycleSkipsOff { get; set; }
 
     /// <summary>Whether the Charging Dock's status ring is turned purple again after the microphone opens.</summary>
     /// <remarks>
@@ -293,6 +297,7 @@ public sealed class AppSettings
         [JsonPropertyName("auto_shutoff")] public int AutoShutoff { get; set; }
         [JsonPropertyName("mode_button_function")] public int ModeButtonFunction { get; set; }
         [JsonPropertyName("mode_button_cycles")] public bool ModeButtonCycles { get; set; }
+        [JsonPropertyName("mode_button_skips_off")] public bool ModeButtonSkipsOff { get; set; }
         [JsonPropertyName("dial_function")] public int DialFunction { get; set; }
         [JsonPropertyName("mix")] public int? Mix { get; set; }
         [JsonPropertyName("assigned_apps")] public List<string> AssignedApps { get; set; } = new();

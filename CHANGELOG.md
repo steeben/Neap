@@ -13,6 +13,9 @@ and date.
 
 ### Added
 
+- The Mode button can step between noise cancellation and transparency
+  only, skipping off. Choose it on Controls; like the three-step cycle, it
+  works while Neap is running.
 - The mini panel has spatial sound, between noise cancellation and the
   equaliser: Off, Windows Sonic or Dolby Atmos, whichever the system offers. It
   is left out where the system has none, and it stays when the headset is away,

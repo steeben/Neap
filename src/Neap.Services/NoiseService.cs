@@ -10,8 +10,8 @@ namespace Neap.Services;
 /// <para>
 /// The rules are <see cref="NoiseControl"/>'s. This keeps it fed from the
 /// headset, sends the writes it asks for, and remembers the two things the
-/// headset cannot: the level noise cancellation comes back at, and whether
-/// the Mode button cycles through all three modes.
+/// headset cannot: the level noise cancellation comes back at, and which
+/// modes the Mode button cycles through.
 /// </para>
 /// <para>
 /// Every change the app makes to noise control goes through here, so that a
@@ -28,18 +28,18 @@ public sealed class NoiseService : IDisposable
     {
         _headset = headset;
         var saved = AppSettings.Current;
-        _noise = new NoiseControl(saved.NoiseBlocking) { Cycling = saved.ModeCyclesNoise };
+        _noise = new NoiseControl(saved.NoiseBlocking) { Cycle = ModeButton.CycleOf(saved.ModeCyclesNoise, saved.ModeCycleSkipsOff) };
         _headset.Changed += OnChanged;
     }
 
-    /// <summary>The mode, the remembered level or the cycling changed.</summary>
+    /// <summary>The mode, the remembered level or the cycle changed.</summary>
     public event Action? Changed;
 
     /// <summary>Gets the mode the headset is in, or null until it has reported it.</summary>
     public NoiseMode? Mode => _noise.Mode;
 
-    /// <summary>Gets whether a press of the Mode button steps through all three modes.</summary>
-    public bool Cycling => _noise.Cycling;
+    /// <summary>Gets which modes a press of the Mode button steps through.</summary>
+    public NoiseCycle Cycle => _noise.Cycle;
 
     /// <summary>Gets whether the mode is known and both of its settings can be written, on a headset whose settings Neap changes.</summary>
     public bool CanChoose => Mode is not null && !_headset.ReadOnly
@@ -61,11 +61,15 @@ public sealed class NoiseService : IDisposable
         Choose(mode);
     }
 
-    /// <summary>Set whether a press of the Mode button steps through all three modes.</summary>
-    public void SetCycling(bool cycling)
+    /// <summary>Set which modes a press of the Mode button steps through.</summary>
+    public void SetCycle(NoiseCycle cycle)
     {
-        _noise.Cycling = cycling;
-        AppSettings.Update(s => s.ModeCyclesNoise = cycling);
+        _noise.Cycle = cycle;
+        AppSettings.Update(s =>
+        {
+            s.ModeCyclesNoise = cycle != NoiseCycle.None;
+            s.ModeCycleSkipsOff = cycle == NoiseCycle.SkippingOff;
+        });
         Changed?.Invoke();
     }
 
@@ -76,7 +80,7 @@ public sealed class NoiseService : IDisposable
         if (writes.Count > 0)
         {
             AppLog.Write(string.Create(CultureInfo.InvariantCulture,
-                $"noise control: the Mode button left {before}, so it goes on to {NoiseControl.Next(before!.Value)}"));
+                $"noise control: the Mode button left {before}, so it goes on to {NoiseControl.Next(before!.Value, _noise.Cycle)}"));
             Send(writes, hold: false);
         }
 

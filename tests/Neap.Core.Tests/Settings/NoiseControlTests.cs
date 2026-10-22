@@ -6,9 +6,9 @@ public class NoiseControlTests
 {
     private const int Anc = NoiseControl.AncKey, Level = NoiseControl.LevelKey;
 
-    private static NoiseControl At(int anc, int level, int? blocking = 80, bool cycling = false)
+    private static NoiseControl At(int anc, int level, int? blocking = 80, NoiseCycle cycle = NoiseCycle.None)
     {
-        var noise = new NoiseControl(blocking) { Cycling = cycling };
+        var noise = new NoiseControl(blocking) { Cycle = cycle };
         noise.Observe(anc, level);
         return noise;
     }
@@ -33,9 +33,17 @@ public class NoiseControlTests
     [Fact]
     public void TheCycleRunsOffThenCancellingThenTransparency()
     {
-        Assert.Equal(NoiseMode.Cancelling, NoiseControl.Next(NoiseMode.Off));
-        Assert.Equal(NoiseMode.Transparency, NoiseControl.Next(NoiseMode.Cancelling));
-        Assert.Equal(NoiseMode.Off, NoiseControl.Next(NoiseMode.Transparency));
+        Assert.Equal(NoiseMode.Cancelling, NoiseControl.Next(NoiseMode.Off, NoiseCycle.AllThree));
+        Assert.Equal(NoiseMode.Transparency, NoiseControl.Next(NoiseMode.Cancelling, NoiseCycle.AllThree));
+        Assert.Equal(NoiseMode.Off, NoiseControl.Next(NoiseMode.Transparency, NoiseCycle.AllThree));
+    }
+
+    [Fact]
+    public void TheCycleSkippingOffRunsCancellingThenTransparency()
+    {
+        Assert.Equal(NoiseMode.Transparency, NoiseControl.Next(NoiseMode.Cancelling, NoiseCycle.SkippingOff));
+        Assert.Equal(NoiseMode.Cancelling, NoiseControl.Next(NoiseMode.Transparency, NoiseCycle.SkippingOff));
+        Assert.Equal(NoiseMode.Cancelling, NoiseControl.Next(NoiseMode.Off, NoiseCycle.SkippingOff));
     }
 
     [Fact]
@@ -68,7 +76,7 @@ public class NoiseControlTests
     [Fact]
     public void AModeChosenHereIsNotTakenForAPress()
     {
-        var noise = At(1, 80, cycling: true);
+        var noise = At(1, 80, cycle: NoiseCycle.AllThree);
         noise.Choose(NoiseMode.Off);
         Assert.Empty(noise.Observe(0, 80));
         Assert.Equal(NoiseMode.Off, noise.Mode);
@@ -81,7 +89,7 @@ public class NoiseControlTests
     [Fact]
     public void APressFromCancellingGoesOnToTransparency()
     {
-        var noise = At(1, 80, cycling: true);
+        var noise = At(1, 80, cycle: NoiseCycle.AllThree);
         Assert.Equal([new SettingWrite(Level, 0), new SettingWrite(Anc, 1)], noise.Observe(0, 80));
         Assert.Equal(NoiseMode.Transparency, noise.Mode);
     }
@@ -89,7 +97,7 @@ public class NoiseControlTests
     [Fact]
     public void APressFromTransparencyStaysOffAndPutsTheLevelBack()
     {
-        var noise = At(1, 0, cycling: true);
+        var noise = At(1, 0, cycle: NoiseCycle.AllThree);
         Assert.Equal([new SettingWrite(Level, 80)], noise.Observe(0, 0));
         Assert.Equal(NoiseMode.Off, noise.Mode);
     }
@@ -97,14 +105,47 @@ public class NoiseControlTests
     [Fact]
     public void APressFromOffLandsOnCancellingWithNothingToWrite()
     {
-        var noise = At(0, 80, cycling: true);
+        var noise = At(0, 80, cycle: NoiseCycle.AllThree);
         Assert.Empty(noise.Observe(1, 80));
         Assert.Equal(NoiseMode.Cancelling, noise.Mode);
     }
 
     [Fact]
     public void APressFromOffWithTheLevelLeftAtZeroPutsItBack() =>
-        Assert.Equal([new SettingWrite(Level, 80)], At(0, 0, cycling: true).Observe(1, 0));
+        Assert.Equal([new SettingWrite(Level, 80)], At(0, 0, cycle: NoiseCycle.AllThree).Observe(1, 0));
+
+    [Fact]
+    public void SkippingOffAPressFromCancellingGoesOnToTransparency()
+    {
+        var noise = At(1, 80, cycle: NoiseCycle.SkippingOff);
+        Assert.Equal([new SettingWrite(Level, 0), new SettingWrite(Anc, 1)], noise.Observe(0, 80));
+        Assert.Equal(NoiseMode.Transparency, noise.Mode);
+    }
+
+    [Fact]
+    public void SkippingOffAPressFromTransparencyGoesBackToCancellingAtItsLevel()
+    {
+        var noise = At(1, 0, cycle: NoiseCycle.SkippingOff);
+        Assert.Equal([new SettingWrite(Level, 80), new SettingWrite(Anc, 1)], noise.Observe(0, 0));
+        Assert.Equal(NoiseMode.Cancelling, noise.Mode);
+    }
+
+    [Fact]
+    public void SkippingOffAPressFromOffLandsOnCancelling()
+    {
+        var noise = At(0, 80, cycle: NoiseCycle.SkippingOff);
+        Assert.Empty(noise.Observe(1, 80));
+        Assert.Equal(NoiseMode.Cancelling, noise.Mode);
+    }
+
+    [Fact]
+    public void SkippingOffTheHeadsetConfirmingAStepIsNotAnotherPress()
+    {
+        var noise = At(1, 0, cycle: NoiseCycle.SkippingOff);
+        noise.Observe(0, 0);
+        Assert.Empty(noise.Observe(1, 80));
+        Assert.Equal(NoiseMode.Cancelling, noise.Mode);
+    }
 
     [Fact]
     public void WithoutCyclingAPressIsLeftToTheHeadset()
@@ -117,19 +158,19 @@ public class NoiseControlTests
     [Fact]
     public void TheFirstReadingIsNotAPress()
     {
-        var noise = new NoiseControl(80) { Cycling = true };
+        var noise = new NoiseControl(80) { Cycle = NoiseCycle.AllThree };
         Assert.Empty(noise.Observe(1, 80));
         Assert.Equal(NoiseMode.Cancelling, noise.Mode);
     }
 
     [Fact]
     public void AChangeOfLevelIsNotAPress() =>
-        Assert.Empty(At(1, 80, cycling: true).Observe(1, 40));
+        Assert.Empty(At(1, 80, cycle: NoiseCycle.AllThree).Observe(1, 40));
 
     [Fact]
     public void TheHeadsetConfirmingAStepIsNotAnotherPress()
     {
-        var noise = At(1, 80, cycling: true);
+        var noise = At(1, 80, cycle: NoiseCycle.AllThree);
         noise.Observe(0, 80);
         Assert.Empty(noise.Observe(1, 0));
         Assert.Equal(NoiseMode.Transparency, noise.Mode);

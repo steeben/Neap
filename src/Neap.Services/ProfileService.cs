@@ -137,7 +137,7 @@ public sealed class ProfileService : IDisposable
         return ProfileEdits.Keeping(new ProfileSettings(mode, level, shh != 0, shhPreset, shhLevel, gate != 0, gateThreshold, ai != 0,
             monitoring, AppServices.Presets.State(Bank.Game)?.Baseline?.Name,
             AppServices.Presets.State(Bank.Mic)?.Baseline?.Name, format, autoShutoff,
-            new ModeChoice(modeFunction, AppServices.Noise.Cycling), dial,
+            new ModeChoice(modeFunction, AppServices.Noise.Cycle), dial,
             ProfileGate.HoldsMix(model) && AppServices.Mix.Running ? AppServices.Mix.Mix : null), Active?.Settings, model);
     }
 
@@ -224,7 +224,7 @@ public sealed class ProfileService : IDisposable
         Set("auto_shutoff", s.AutoShutoff);
         Set("dial_function", s.DialFunction);
         Set("mode_button_function", s.ModeButton.Function);
-        if (ProfileGate.Holds(model, "mode_button_function")) AppServices.Noise.SetCycling(s.ModeButton.Cycles);
+        if (ProfileGate.Holds(model, "mode_button_function")) AppServices.Noise.SetCycle(s.ModeButton.Cycle);
         if (ProfileGate.HoldsMix(model) && s.Mix is { } mix) AppServices.Mix.Apply(mix, $"profile {profile.Name}");
         await Platform.Current.Spatial.Apply(s.Spatial);
 
@@ -355,7 +355,7 @@ public sealed class ProfileService : IDisposable
         s.NoiseMode, s.NoiseLevel, s.SuperhumanHearing, s.ShhPreset, s.ShhLevel,
         s.NoiseGate, s.NoiseGateThreshold, s.AiNoiseReduction, s.MicMonitoring,
         s.GamePreset, s.MicPreset, s.Spatial, s.AutoShutoff,
-        new ModeChoice(s.ModeButtonFunction, s.ModeButtonCycles), s.DialFunction, s.Mix));
+        new ModeChoice(s.ModeButtonFunction, ModeButton.CycleOf(s.ModeButtonCycles, s.ModeButtonSkipsOff)), s.DialFunction, s.Mix));
 
     private static AppSettings.StoredProfile ToStored(Profile profile) => new()
     {
@@ -377,7 +377,8 @@ public sealed class ProfileService : IDisposable
         Spatial = profile.Settings.Spatial,
         AutoShutoff = profile.Settings.AutoShutoff,
         ModeButtonFunction = profile.Settings.ModeButton.Function,
-        ModeButtonCycles = profile.Settings.ModeButton.Cycles,
+        ModeButtonCycles = profile.Settings.ModeButton.Cycle != NoiseCycle.None,
+        ModeButtonSkipsOff = profile.Settings.ModeButton.Cycle == NoiseCycle.SkippingOff,
         DialFunction = profile.Settings.DialFunction,
         Mix = profile.Settings.Mix,
     };
