@@ -13,11 +13,11 @@ and date.
 
 ### Added
 
-- Neap can switch Windows to the headset. With **Switch to the headset** on
+- Neap switches Windows to the headset. With **Automatic device switch** on
   in Settings, the headset becomes the default speaker and microphone, for
   calls too, when it connects, and the devices used before come back when it
   is switched off or out of range. Settings can name other devices to go back
-  to instead. It is off by default, and Windows only.
+  to instead. It is on by default, and Windows only.
 - The mini panel has spatial sound, between noise cancellation and the
   equaliser: Off, Windows Sonic or Dolby Atmos, whichever the system offers. It
   is left out where the system has none, and it stays when the headset is away,

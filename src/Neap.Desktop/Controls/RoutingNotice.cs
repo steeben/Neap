@@ -18,7 +18,7 @@ namespace Neap.Desktop.Controls;
 /// </para>
 /// <para>
 /// It opens the system's own sound settings. The app changes the default
-/// device itself only for someone who has asked it to; see
+/// device itself only while its switch for that is on; see
 /// <see cref="SoundFollowsHeadset"/>.
 /// </para>
 /// </remarks>

@@ -1,21 +1,22 @@
 # Decisions
 
-## 2026-10-22 — The default devices can follow the headset, when asked
+## 2026-10-22 — The default devices follow the headset
 
 - **Options:** keep only warning when Windows points at the wrong device and
   opening Sound settings; switch the defaults whenever the headset comes and
-  goes; offer the switch as a setting, off by default.
-- **Chosen:** a setting, off by default and on Windows only. With it on, the
+  goes; offer the switch as a setting, off or on by default.
+- **Chosen:** a setting, on by default and on Windows only. With it on, the
   headset's output and microphone become the defaults for every role when
   it connects, and when it goes the devices used before come back, or the
   ones chosen in Settings. The headset answering or going quiet is what
   moves them, since a transmitter keeps its devices while the headset is
-  off. The warning stays for everyone who leaves it off.
+  off. The warning stays for everyone who turns it off.
 - **Why:** a transmitter left as the default after the headset is switched
   off plays to nobody, and switching back by hand every time is the chore
   people ask Neap to take away. Switching behind someone's back was dropped
-  before as too unreliable; asked for, and with what goes back chosen by the
-  person, it is their choice being carried out.
+  before as too unreliable; tried on the headset, it moves within a fraction
+  of a second of Neap seeing the headset, what goes back can be chosen, and
+  one switch turns it all off.
 - **Revisit if:** Windows refuses the switch on some systems, or Linux
   testers ask for the same.
 
