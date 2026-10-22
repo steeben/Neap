@@ -1,11 +1,15 @@
 using System.Diagnostics;
 using System.Globalization;
 using Avalonia;
+using Avalonia.Animation;
+using Avalonia.Animation.Easings;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Input;
+using Avalonia.Media;
 using Avalonia.Media.Imaging;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Avalonia.VisualTree;
 using Neap.Core;
@@ -33,6 +37,11 @@ namespace Neap.Desktop;
 /// went elsewhere meanwhile.
 /// </para>
 /// <para>
+/// It fades up into place as it opens and fades away as it closes, as the
+/// system's flyouts do, unless animation is off; see <see cref="Motion"/>.
+/// A close waits for the fade, except when the app is stopping.
+/// </para>
+/// <para>
 /// A pretend run with <see cref="Pretend.Mini"/> shows it alone as the app's
 /// only window, which stays open so it can be looked at or pictured.
 /// </para>
@@ -42,10 +51,18 @@ public partial class MiniPanelWindow : Window
     /// <summary>The gap kept between the panel and the edge of the work area, in device-independent pixels.</summary>
     private const double EdgeGap = 12;
 
+    /// <summary>How far the card moves as it fades in or out, in device-independent pixels.</summary>
+    private const double Rise = 12;
+
+    private static readonly TimeSpan Arrive = TimeSpan.FromMilliseconds(180);
+    private static readonly TimeSpan Leave = TimeSpan.FromMilliseconds(120);
+
     private readonly MainWindow? _main;
     private readonly BatteryMeter _battery = new("caption");
     private IDisposable? _recheck;
     private bool _painting;
+    private bool _leaving;
+    private bool _left;
 
     public MiniPanelWindow()
     {
@@ -106,6 +123,7 @@ public partial class MiniPanelWindow : Window
         AppServices.Mix.Changed += Paint;
         Paint();
         Place();
+        if (Motion.Enabled) _ = Fade(0, 1, Rise, 0, Arrive, new CubicEaseOut());
 
         // Focus begins on the dial, on the way to choose chat apps while the dial waits for
         // them, or else on the first thing that can take it. Given without the focus ring,
@@ -119,6 +137,15 @@ public partial class MiniPanelWindow : Window
         if (Pretend.Snapshot is { } file) _ = SaveAndExit(file);
     }
 
+    /// <summary>Holds the close until the card has faded out, unless animation is off or the app is stopping.</summary>
+    protected override void OnClosing(WindowClosingEventArgs e)
+    {
+        base.OnClosing(e);
+        if (_left || !Motion.Enabled || e.CloseReason is WindowCloseReason.OSShutdown or WindowCloseReason.ApplicationShutdown) return;
+        e.Cancel = true;
+        if (!_leaving) _ = FadeAndClose();
+    }
+
     protected override void OnClosed(EventArgs e)
     {
         base.OnClosed(e);
@@ -130,6 +157,32 @@ public partial class MiniPanelWindow : Window
     }
 
     private void OnStatus(HeadsetStatus status) => Paint();
+
+    private async Task FadeAndClose()
+    {
+        _leaving = true;
+        Card.IsHitTestVisible = false;
+        await Fade(1, 0, 0, Rise / 2, Leave, new CubicEaseIn());
+        _left = true;
+        Close();
+    }
+
+    /// <summary>Moves the card's opacity and its offset below its place from one value to another.</summary>
+    private Task Fade(double fromOpacity, double toOpacity, double fromOffset, double toOffset, TimeSpan duration, Easing easing)
+    {
+        Card.RenderTransform ??= new TranslateTransform();
+        return new Animation
+        {
+            Duration = duration,
+            Easing = easing,
+            FillMode = FillMode.Both,
+            Children =
+            {
+                new KeyFrame { Cue = new Cue(0), Setters = { new Setter(OpacityProperty, fromOpacity), new Setter(TranslateTransform.YProperty, fromOffset) } },
+                new KeyFrame { Cue = new Cue(1), Setters = { new Setter(OpacityProperty, toOpacity), new Setter(TranslateTransform.YProperty, toOffset) } },
+            },
+        }.RunAsync(Card);
+    }
 
     /// <summary>Opens the main window, on a page if one is given, and puts this away.</summary>
     private void OpenWindow(string? page)

@@ -92,6 +92,8 @@ and date.
 - On Windows, the mini panel opens by Neap's icon, on the screen whose taskbar
   holds it, rather than in the corner of the main screen. Opened from the
   icon's menu, it goes in the corner of the screen the menu was on.
+- The mini panel fades up into place as it opens and fades away as it
+  closes. With "Show animations in Windows" off, it appears and goes at once.
 - The app's text is set in Figtree, and the name beside the mark in Outfit,
   in place of Inter. Both are carried inside the app, so Windows and Linux
   show the same letters. The text is a little rounder and a little wider.

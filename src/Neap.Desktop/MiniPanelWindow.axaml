@@ -31,7 +31,7 @@
         in a window of its own so it can sit by the notification area and
         go away when it loses focus.
     -->
-    <Border Classes="card">
+    <Border x:Name="Card" Classes="card">
         <StackPanel Spacing="{StaticResource NeapSpaceM}">
 
             <!-- The headset, how it is connected, its battery, and the way to the window. -->
