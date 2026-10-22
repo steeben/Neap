@@ -82,6 +82,13 @@ public sealed class HeadsetService : IDisposable
 
     private static readonly string[] Watched = ["SAF", "Mic"];
 
+    /// <summary>How many questions in a row, beats and watches together, may go unanswered before the headset counts as gone.</summary>
+    /// <remarks>
+    /// One missed answer is not enough, a reply can be lost behind a long
+    /// read, so three: about three seconds at the watches' pace.
+    /// </remarks>
+    private const int UnansweredLimit = 3;
+
     /// <summary>Closest together two requests to the headset are sent; it drops one sent straight after another.</summary>
     private static readonly TimeSpan AskGap = TimeSpan.FromMilliseconds(300);
 
@@ -559,6 +566,20 @@ public sealed class HeadsetService : IDisposable
         string carrying = "";
         string product = "";
         bool elsewhere = false;
+        var watchAnswers = new HashSet<string>(StringComparer.Ordinal);
+
+        // Silence is a reason to look again, not to keep asking the same
+        // device. A headset switched off on the Charging Dock can come back
+        // on the USB Transmitter, and asking only the dock leaves the app on
+        // "Settings unavailable" for ever. Letting go makes the next try ask
+        // every device, the way a first connect does.
+        void Gone()
+        {
+            primed = false;
+            Forget();
+            Unreachable();
+            LetGo(ref client);
+        }
 
         while (!_stopping.IsCancellationRequested)
         {
@@ -586,6 +607,7 @@ public sealed class HeadsetService : IDisposable
                         continue;
                     }
                     primed = false;
+                    watchAnswers.Clear();
                 }
 
                 var route = LinkTracker.RouteOf(client.ProductId);
@@ -699,20 +721,7 @@ public sealed class HeadsetService : IDisposable
                     // as gone.
                     unanswered = beat.Count > 0 ? 0 : unanswered + 1;
 
-                    if (unanswered >= 2)
-                    {
-                        primed = false;
-                        Forget();
-                        Unreachable();
-
-                        // Silence is a reason to look again, not to keep asking
-                        // the same device. A headset switched off on the
-                        // Charging Dock can come back on the USB Transmitter,
-                        // and asking only the dock leaves the app on "Settings
-                        // unavailable" for ever. Letting go makes the next try
-                        // ask every device, the way a first connect does.
-                        LetGo(ref client);
-                    }
+                    if (unanswered >= 2) Gone();
                     // Reading the slots costs four round trips, so it is done
                     // when 0x150 says something moved, and on a slow timer in
                     // case a change is ever missed — not every beat.
@@ -737,10 +746,24 @@ public sealed class HeadsetService : IDisposable
                 if (primed && client is not null && asking >= nextWatch
                     && asking - lastAsk >= AskGap.TotalSeconds * Stopwatch.Frequency)
                 {
-                    var seen = client.ReadCategory(Watched[watches++ % Watched.Length], BeatWindow);
+                    string category = Watched[watches++ % Watched.Length];
+                    var seen = client.ReadCategory(category, BeatWindow);
                     lastAsk = Stopwatch.GetTimestamp();
                     nextWatch = lastAsk + (long)(WatchEvery.TotalSeconds * Stopwatch.Frequency);
-                    if (seen.Count > 0) Merge(seen, authoritative: false);
+                    if (seen.Count > 0)
+                    {
+                        Merge(seen, authoritative: false);
+                        watchAnswers.Add(category);
+                        unanswered = 0;
+                    }
+                    // Counted like a missed beat, so a switch-off shows in
+                    // a few seconds rather than two beats. Only a category
+                    // that has answered on this device counts: a headset
+                    // that never answers one is not gone for it.
+                    else if (watchAnswers.Contains(category) && ++unanswered >= UnansweredLimit)
+                    {
+                        Gone();
+                    }
                 }
             }
             catch (DeviceNotFoundException)
