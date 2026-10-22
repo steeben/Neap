@@ -14,9 +14,9 @@ namespace Neap.Desktop;
 /// Drawn at 32 pixels, the size a notification-area icon is shown at on a
 /// screen at twice the usual scale, with the batteries' edges on even pixels
 /// so they stay sharp when the system halves them. It is drawn in one
-/// colour, the taskbar's shade as Neap's glyph is, and turns red at the
-/// person's warning level. The red is a shade for each taskbar, each above
-/// 3:1 against it.
+/// colour, the taskbar's shade as Neap's glyph is, and turns orange and then
+/// red as the charge runs down; see <see cref="TrayTone"/>. The orange and
+/// red are a shade for each taskbar, each above 3:1 against it.
 /// </para>
 /// <para>
 /// In the headset styles the battery or number sits in the headset's
@@ -53,6 +53,8 @@ internal static class TrayBatteryPicture
     private static readonly RoundedRect RightCup = new(new Rect(22, 17, 7, 11), 2.5);
     private static readonly Geometry Strike = Geometry.Parse("M3 3 L29 29");
 
+    private static readonly IBrush OrangeOnDark = new SolidColorBrush(Color.Parse("#FF9C33"));
+    private static readonly IBrush OrangeOnLight = new SolidColorBrush(Color.Parse("#B35900"));
     private static readonly IBrush RedOnDark = new SolidColorBrush(Color.Parse("#FF4343"));
     private static readonly IBrush RedOnLight = new SolidColorBrush(Color.Parse("#C42B1C"));
 
@@ -66,7 +68,7 @@ internal static class TrayBatteryPicture
     public static Bitmap Draw(TrayBattery battery, ThemeVariant shade)
     {
         var ink = Ink(shade);
-        var colour = battery.Low ? Red(shade) : ink;
+        var colour = Colour(battery.Tone, shade, ink);
         var bitmap = new RenderTargetBitmap(new PixelSize(Size, Size));
         using (var context = bitmap.CreateDrawingContext())
         {
@@ -168,7 +170,12 @@ internal static class TrayBatteryPicture
         return outline;
     }
 
-    private static IBrush Red(ThemeVariant shade) => shade == ThemeVariant.Light ? RedOnLight : RedOnDark;
+    private static IBrush Colour(TrayTone tone, ThemeVariant shade, IBrush ink) => tone switch
+    {
+        TrayTone.Low => shade == ThemeVariant.Light ? OrangeOnLight : OrangeOnDark,
+        TrayTone.Critical => shade == ThemeVariant.Light ? RedOnLight : RedOnDark,
+        _ => ink,
+    };
 
     private static IBrush Ink(ThemeVariant shade) =>
         Application.Current!.TryGetResource("NeapTextBrush", shade, out object? value) && value is IBrush brush

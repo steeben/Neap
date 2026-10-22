@@ -23,9 +23,8 @@ and date.
 
 - The icon by the clock shows the headset's battery: a battery filled to the
   charge, the charge as a number, or a headset with either in its corner,
-  chosen in Settings under "Icon by the clock". It turns red at a low battery
-  level you set, 20% unless changed, and the battery shows a bolt while
-  charging. The headset styles show a faint, struck-through headset while it
+  chosen in Settings under "System tray icon". It turns orange at 25% and red
+  at 15%, and the battery shows a bolt while charging. The headset styles show a faint, struck-through headset while it
   is disconnected. Otherwise, with no reading or with "Neap" chosen, it is
   Neap's own icon. Hovering over it still says the charge in words.
 - Neap switches Windows to the headset. With **Automatic device switch** on

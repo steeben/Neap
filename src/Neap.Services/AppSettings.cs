@@ -131,9 +131,6 @@ public sealed class AppSettings
     /// </remarks>
     [JsonPropertyName("tray_icon")] public TrayIconStyle TrayIcon { get; set; } = TrayIconStyle.HeadsetPercentage;
 
-    /// <summary>The charge, as a percentage, at and below which the battery on the icon turns red.</summary>
-    [JsonPropertyName("tray_warn_at")] public int TrayWarnAt { get; set; } = TrayBattery.DefaultWarnAt;
-
     /// <summary>Whether the app is drawn light, dark or as the system is set.</summary>
     [JsonPropertyName("theme")]
     [JsonConverter(typeof(JsonStringEnumConverter<ThemeChoice>))]

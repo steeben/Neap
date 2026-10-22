@@ -4,23 +4,24 @@
 
 - **Options:** keep the battery in the tooltip only; draw the battery in
   colour, as the app's battery bar does; a one-colour battery that turns
-  red at a level the person sets; the charge as a number; a headset with
-  either in its corner.
+  red at a level the person sets, or at fixed levels; the charge as a
+  number; a headset with either in its corner.
 - **Chosen:** a choice in Settings between Neap's glyph, a one-colour
   battery, the number, and a headset with a battery or the number in its
-  corner, the headset with the number by default, with a low level (5 to 50%, 20% to start)
-  at which any of them turns red. The batteries show a bolt while charging.
+  corner, the headset with the number by default. Any of them turns orange
+  at 25% and red at 15%. The batteries show a bolt while charging.
   The headset styles show a faint, struck-through headset while it is known
   to be disconnected; otherwise, with no reading, the icon is Neap's glyph.
 - **Why:** how much charge is left is what the icon is glanced at for, and
   a tooltip needs a hover. One colour matches the other icons by the clock,
-  so red stands out only when it means something; people differ on what
-  counts as low, so the level is theirs. The headset styles say whose
+  so colour stands out only when it means something. Two fixed steps say
+  "charge soon" and "charge now" without a setting to tune; a level of
+  one's own was tried and was one more thing to set. The headset styles say whose
   battery it is among other icons by the clock, and can say "disconnected"
   at a glance, which a battery alone cannot; with the number, the charge
   is exact, so that is the default.
 - **Revisit if:** the number is hard to read at 100% scale, or people ask
-  for the colour battery.
+  for the colour battery or their own warning levels.
 
 ## 2026-10-22 — The default devices follow the headset
 
