@@ -1,11 +1,17 @@
-<img src="docs/neap.png" alt="" width="96" align="right">
+<img src="assets/brand/turt-mark.svg" alt="" width="96" align="right">
 
 # Turt
 
 Quiet control for the Turtle Beach Stealth Pro II on Windows and Linux, in
 place of Swarm II. No driver, no Turtle Beach software, no admin rights.
 
-**[Download the latest release](https://github.com/lykosapps/Neap/releases/latest)**
+Turt is a fork of [Neap](https://github.com/lykosapps/Neap) by lykosapps,
+with a new name and logo and a few additions of its own: a battery in the
+notification area, automatic switching of Windows' sound devices, a frosted
+glass mini panel with its own shortcut, and a Mode button that can skip
+"off". Everything else is Neap's work, under the same licence.
+
+**[Download the latest release](https://github.com/steeben/Turt/releases/latest)**
 · Windows 10 version 2004 or later, 64-bit · Linux, 64-bit, on any desktop
 with PulseAudio or PipeWire
 
@@ -13,20 +19,63 @@ with PulseAudio or PipeWire
 PlayStation edition should work but hasn't been tried, so reports are
 welcome.
 
-> **Own another Turtle Beach headset? Help bring Neap to it.** The Stealth
-> 600 Gen 3, 700 Gen 3, 500 and Atlas Air share the Stealth Pro II's
-> platform. A ten-minute recording made in Neap is where support for them,
+> **Own another Turtle Beach headset? Help bring it to Turt and Neap.**
+> The Stealth 600 Gen 3, 700 Gen 3, 500 and Atlas Air share the Stealth Pro II's
+> platform. A ten-minute recording made in Turt is where support for them,
 > and for others, starts. Nothing else to install, and no technical
 > knowledge needed. **[Here's how](docs/MAPPING.md).**
 
 Not affiliated with or endorsed by Turtle Beach. Turtle Beach, Stealth Pro II
 and Swarm II are trademarks of Turtle Beach Corporation.
 
+## What Turt adds to Neap
+
+### The battery by the clock
+
+The icon in the notification area can show the headset's battery: a battery
+filled to the charge, the charge as a number, or a headset with either in its
+corner. Choose it in **Settings → System tray icon**, or keep Turt's own icon.
+It turns orange at 25% and red at 15%, the battery shows a bolt while
+charging, and the headset styles show a faint, struck-through headset while
+it's disconnected. Hovering over it still says the charge in words.
+
+### Automatic device switch (Windows)
+
+With **Automatic device switch** on, Windows makes the headset the default
+speaker and microphone, for calls too, when it connects, and puts back the
+devices used before when it's switched off or out of range. Settings can
+name other devices to go back to instead. It's on by default.
+
+### A frosted glass mini panel
+
+A click on the icon by the clock opens the mini panel for mid-game: the mix,
+microphone mute, noise control, spatial sound and the equaliser preset.
+In Turt it can be drawn as frosted glass, after the Frosty Glass taskbar
+theme, with the desktop showing through it, blurred, under a tint. Settings
+chooses between it and the standard look, and frosted glass is the default.
+On Linux the glass is solid.
+
+- **Its own shortcut.** Ctrl + Alt + M opens and closes it, by the clock on
+  the screen whose taskbar holds it, and can be changed beside the mix's
+  shortcuts.
+- **It fades** up into place as it opens and away as it closes. With "Show
+  animations in Windows" off, it appears and goes at once.
+- **A theme of your choosing.** Settings can follow the system, or stay light
+  or dark, and the mini panel follows it.
+
+### Noise cancellation and transparency, without off
+
+The headset's Mode button can step between noise cancellation and
+transparency only, skipping off. Choose it on Controls. Like the usual
+three-step cycle, it works while Turt is running.
+
 ## What it does
+
+The screenshots below were taken in Neap, before the new name and logo.
 
 ### A game and chat mix, with nothing to install
 
-Pick the apps that carry chat, such as Discord or Teams, and Neap turns them
+Pick the apps that carry chat, such as Discord or Teams, and Turt turns them
 against everything else. No virtual audio cable, driver or reboot, and it
 works on the Xbox edition, where Swarm II's mix isn't officially supported.
 
@@ -40,7 +89,7 @@ rebindable.
 
 Choose noise cancellation, transparency or off. The headset has no
 transparency mode of its own; transparency is noise cancellation at zero,
-which lets the room in. The Mode button steps through all three while Neap
+which lets the room in. The Mode button steps through all three while Turt
 is running, or between noise cancellation and transparency only.
 
 ![The Audio page, with noise control set to noise cancellation and how much of the room it blocks.](docs/screenshots/audio.png)
@@ -69,9 +118,9 @@ switch only while it's using the microphone, so its profile is on for calls.
 
 See the headset's battery and whether the spare in the dock is charging,
 set the brightness of both lights, and choose the audio format. The dock's
-level is only reliable once the spare is full, so while it charges Neap says
+level is only reliable once the spare is full, so while it charges Turt says
 so with a bolt instead of a number, and a battery just put in the headset
-reads "Settling…" until its reading steadies. Neap can also put
+reads "Settling…" until its reading steadies. Turt can also put
 the dock back into high-resolution audio after an app has used the
 microphone.
 
@@ -82,7 +131,7 @@ microphone.
 - **Clear status.** Connected, no sound, switched off or out of range, each
   with what still works and the one thing to do.
 - **Catches the wrong device.** When your system sends sound or the
-  microphone somewhere the headset isn't listening, Neap names the right one.
+  microphone somewhere the headset isn't listening, Turt names the right one.
 - **Settings Swarm II's desktop app doesn't have:** wake on motion and voice
   prompt volume.
 - **Every other setting** the headset has: microphone, noise gate,
@@ -91,8 +140,8 @@ microphone.
 - **Runs from the notification area**, with the mix and chat wheel still
   working, and can start when you sign in. On a desktop with no
   notification area, such as GNOME without its extension, closing the
-  window closes Neap.
-- **Tells you when there's a newer version.** Neap asks GitHub once a day,
+  window closes Turt.
+- **Tells you when there's a newer version.** Turt asks GitHub once a day,
   and on Windows updating is one button in Settings; on Linux it opens the
   download page. It sends nothing from your computer or headset, only the
   request, which GitHub sees as any website does, and the check can be turned
@@ -104,10 +153,10 @@ The [changelog](CHANGELOG.md) has the full list, and what's not included.
 
 ## Install on Windows
 
-1. From the [latest release](https://github.com/lykosapps/Neap/releases/latest),
-   download `Neap-<version>-win-x64.zip`.
-2. Unzip it to a folder of its own, such as `C:\Users\<you>\Apps\Neap`.
-3. Run `Neap.exe`.
+1. From the [latest release](https://github.com/steeben/Turt/releases/latest),
+   download `Turt-<version>-win-x64.zip`.
+2. Unzip it to a folder of its own, such as `C:\Users\<you>\Apps\Turt`.
+3. Run `Turt.exe`.
 4. Close Swarm II and remove the Waves audio driver, as described in
    [Alongside Swarm II](#alongside-swarm-ii-windows).
 
@@ -117,50 +166,51 @@ your PC. Choose **More info**, then **Run anyway**.
 It needs nothing else: no .NET runtime, no driver. That makes it about
 130 MB on disk.
 
-**To update,** choose **Update and restart** at the top of Neap's settings
-when a newer version is out. Neap checks once a day and says so by
+**To update,** choose **Update and restart** at the top of Turt's settings
+when a newer version is out. Turt checks once a day and says so by
 the clock. Settings are kept. To update by hand instead, or from 0.1.0,
-close Neap from the notification area, replace the contents of its folder
+close Turt from the notification area, replace the contents of its folder
 with the new release, and run it again.
 
 **To remove it,** turn off **Start when you sign in** in its settings if you
 turned it on, close it from the notification area, and delete its folder
-and `%LOCALAPPDATA%\Neap`, where it keeps its settings and log.
+and `%LOCALAPPDATA%\Neap`, where it keeps its settings and log. The folder
+keeps Neap's name, so settings carry over from Neap.
 
 **To check a download,** each release is built on GitHub from the tagged
 commit and has a `.sha256` file beside the zip. Compare it with:
 
 ```
-Get-FileHash Neap-<version>-win-x64.zip
+Get-FileHash Turt-<version>-win-x64.zip
 ```
 
 ## Install on Linux
 
-1. From the [latest release](https://github.com/lykosapps/Neap/releases/latest),
-   download `Neap-<version>-x86_64.AppImage`.
-2. Make it runnable: in a terminal, `chmod +x Neap-<version>-x86_64.AppImage`,
+1. From the [latest release](https://github.com/steeben/Turt/releases/latest),
+   download `Turt-<version>-x86_64.AppImage`.
+2. Make it runnable: in a terminal, `chmod +x Turt-<version>-x86_64.AppImage`,
    or in your file manager tick **Allow executing as a program**. Then run it.
-3. If Neap says it isn't allowed to use the headset, choose **Allow access**.
+3. If Turt says it isn't allowed to use the headset, choose **Allow access**.
    Your system asks for your password once; the only thing it changes is a
    small rule file, `/etc/udev/rules.d/70-neap.rules`, that lets you use the
-   headset. If there's no password prompt, Neap gives you the command to run
+   headset. If there's no password prompt, Turt gives you the command to run
    yourself.
 
 It is one file with everything inside it, and runs on any 64-bit distribution
 whose desktop has PulseAudio or PipeWire. If it says it needs FUSE, install
 `libfuse2` from your distribution, or run it as
-`./Neap-<version>-x86_64.AppImage --appimage-extract-and-run`.
+`./Turt-<version>-x86_64.AppImage --appimage-extract-and-run`.
 
 The download is not signed. Each release has a `.sha256` file beside it; check
-it with `sha256sum -c Neap-<version>-x86_64.AppImage.sha256`.
+it with `sha256sum -c Turt-<version>-x86_64.AppImage.sha256`.
 
-**To update,** Neap tells you when a newer version is out and opens the
+**To update,** Turt tells you when a newer version is out and opens the
 download page. Download the new file and use it in place of the old one.
 Settings are kept. If you turned on **Start when you sign in**, run the new
 file once and it points the sign-in entry at itself.
 
 **To remove it,** turn off **Start when you sign in** in its settings if you
-turned it on, close Neap, and delete the file and `~/.local/share/Neap`, where
+turned it on, close Turt, and delete the file and `~/.local/share/Neap`, where
 it keeps its settings and log. If you allowed access, delete
 `/etc/udev/rules.d/70-neap.rules` too.
 
@@ -175,14 +225,14 @@ program.
 Swarm II only runs on Windows, so this is for Windows. Linux has nothing to
 close or remove.
 
-1. **Keep Swarm II, for firmware updates and pairing.** Neap deliberately
+1. **Keep Swarm II, for firmware updates and pairing.** Turt deliberately
    does neither.
 2. **Make sure Swarm II isn't running in the background.** The two apps
    fight over the headset when both are open. In Swarm II: Settings (the
    cog, bottom left) → App Settings → turn off **Autostart Swarm II**, then
    close it, including from the notification area. Open it only for a
    firmware update, and close it again afterwards.
-3. **Remove the Waves audio driver.** Neap's mix doesn't need it. In
+3. **Remove the Waves audio driver.** Turt's mix doesn't need it. In
    Windows Settings → Apps, uninstall **Turtle Beach Audio Driver** by Waves
    Audio Ltd, and don't reinstall it from Swarm II's driver menu.
 
@@ -195,10 +245,12 @@ no-notification-area GNOME) have been run only against a pretend headset, not
 a real one, and a Wayland-only desktop and a screen reader on Linux haven't
 been tried. There is no installer yet, and it was written with AI assistance.
 
-Found a problem? In **Settings → Problems and other headsets**, record while it happens,
-then choose **Report on GitHub**. You can also
-[open an issue](https://github.com/lykosapps/Neap/issues) directly. Have
-another Turtle Beach headset? [Help support it](docs/MAPPING.md).
+Found a problem with something Turt adds? [Open an issue on
+Turt](https://github.com/steeben/Turt/issues). In **Settings → Problems and
+other headsets** you can record while it happens; its **Report on GitHub**
+button still opens an issue on Neap, which is the right place for problems
+Neap has too. Have another Turtle Beach headset?
+[Help support it](docs/MAPPING.md).
 For a security problem, see [SECURITY.md](SECURITY.md).
 
 ## For developers
@@ -221,7 +273,7 @@ dotnet publish src/Neap.Desktop -c Release -r linux-x64 -f net10.0 --self-contai
 ```
 
 Run `Neap.Desktop.exe` (Windows) or `Neap.Desktop` (Linux) from the `publish`
-folder. A release renames the Windows file `Neap.exe`, which the updater in
+folder. A release renames the Windows file `Turt.exe`, which the updater in
 every installed copy looks for. You need the .NET 10 SDK to build, but not to
 run the result. The Windows build can only be made on Windows; the Linux one
 builds on either. To make the Linux AppImage from a Linux publish folder, see
@@ -280,7 +332,13 @@ chip vendor's own firmware commands reach only the USB device you are plugged
 into, never the headset behind it. Confirm which device answered before
 trusting a result.
 
-## Licence
+## Credits and licence
+
+Turt is built on [Neap](https://github.com/lykosapps/Neap), written by
+lykosapps: the protocol work, the mix, the equaliser, profiles and nearly
+everything described above come from it. The source still uses Neap's
+project names (`Neap.Desktop`, `Neap.Core` and so on) to stay close to it,
+and changes here are offered back to Neap where they fit.
 
 Copyright (C) 2026 lykosapps
 
