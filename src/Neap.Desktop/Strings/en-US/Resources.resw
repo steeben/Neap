@@ -453,6 +453,36 @@
   <data name="Settings_StartWithWindows.Description" xml:space="preserve">
     <value>Starts in the notification area.</value>
   </data>
+  <data name="Settings_TrayIcon.Header" xml:space="preserve">
+    <value>Icon by the clock</value>
+  </data>
+  <data name="Settings_TrayIcon.Description" xml:space="preserve">
+    <value>Shows the headset's battery while it is connected.</value>
+  </data>
+  <data name="Settings_TrayIconChoice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
+    <value>What the icon by the clock shows</value>
+  </data>
+  <data name="Settings_TrayIconLogo.Content" xml:space="preserve">
+    <value>Neap</value>
+  </data>
+  <data name="Settings_TrayIconBattery.Content" xml:space="preserve">
+    <value>Battery</value>
+  </data>
+  <data name="Settings_TrayIconPercentage.Content" xml:space="preserve">
+    <value>Percentage</value>
+  </data>
+  <data name="Settings_TrayWarnAt.Header" xml:space="preserve">
+    <value>Low battery</value>
+  </data>
+  <data name="Settings_TrayWarnAt.Description" xml:space="preserve">
+    <value>The icon turns red at this level.</value>
+  </data>
+  <data name="Settings_TrayWarnSlider.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
+    <value>Low battery level, in percent</value>
+  </data>
+  <data name="Settings_TrayWarnLevel" xml:space="preserve">
+    <value>{0}%</value>
+  </data>
   <data name="Settings_MiniPanel.Header" xml:space="preserve">
     <value>Mini panel</value>
   </data>

@@ -2,6 +2,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Neap.Core;
 using Neap.Core.Audio;
+using Neap.Core.Connection;
 using Neap.Core.Presets;
 using Neap.Core.Settings;
 
@@ -20,7 +21,7 @@ namespace Neap.Services;
 /// control the headset has no place for, the parametric adjustments
 /// behind a preset, of which its slot holds only the result, which
 /// preset an edited curve came from, whether to keep the Charging Dock's
-/// status ring purple, and whether and when to look for a newer version and
+/// status ring purple, what the tray icon shows, and whether and when to look for a newer version and
 /// whether its banner has been put away.
 /// </para>
 /// <para>
@@ -98,6 +99,17 @@ public sealed class AppSettings
     /// open the window.
     /// </remarks>
     [JsonPropertyName("mini_panel")] public bool MiniPanel { get; set; } = true;
+
+    /// <summary>What the notification-area icon shows: Neap's glyph, the headset's battery, or its charge as a number.</summary>
+    /// <remarks>
+    /// The battery by default: how much charge is left is the question the
+    /// icon is most often looked at for. Whatever is chosen, the icon shows
+    /// Neap's glyph while there is no reading.
+    /// </remarks>
+    [JsonPropertyName("tray_icon")] public TrayIconStyle TrayIcon { get; set; } = TrayIconStyle.Battery;
+
+    /// <summary>The charge, as a percentage, at and below which the battery on the icon turns red.</summary>
+    [JsonPropertyName("tray_warn_at")] public int TrayWarnAt { get; set; } = TrayBattery.DefaultWarnAt;
 
     /// <summary>Whether Neap asks GitHub once a day for a newer version.</summary>
     /// <remarks>

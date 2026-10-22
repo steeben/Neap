@@ -5,6 +5,7 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform;
+using Avalonia.Styling;
 using Avalonia.Threading;
 using Microsoft.Win32;
 using Neap.Core;
@@ -16,7 +17,8 @@ namespace Neap.Desktop;
 
 /// <summary>
 /// The notification-area icon: closing the window puts the app there instead
-/// of stopping it, and it says the headset's state and battery on hover.
+/// of stopping it, it draws the headset's battery, and it says the headset's
+/// state and battery on hover.
 /// </summary>
 /// <remarks>
 /// The mix, the chat wheel and the headset's own controls are the point of
@@ -31,6 +33,10 @@ public partial class MainWindow : IDisposable
     private MiniPanelWindow? _mini;
     private NativeMenuItem? _miniItem;
     private long _miniClosedAt;
+    private bool _taskbarLight;
+
+    /// <summary>What the icon was last drawn as, so it is drawn again only when that changes.</summary>
+    private (TrayBattery? Battery, bool Light)? _trayDrawn;
 
     /// <summary>Gives memory back every minute while the window is hidden, on Windows.</summary>
     private IDisposable? _trimming;
@@ -65,9 +71,10 @@ public partial class MainWindow : IDisposable
         quit.Click += (_, _) => Quit();
         _tray = new TrayIcon
         {
-            Icon = TrayPicture(),
             Menu = new NativeMenu { open, mini, new NativeMenuItemSeparator(), quit },
         };
+        _taskbarLight = TaskbarShadeIsLight();
+        PaintTrayPicture();
         if (Application.Current?.PlatformSettings is { } settings) settings.ColorValuesChanged += RepaintTrayPicture;
         _tray.Clicked += (_, _) =>
         {
@@ -117,25 +124,46 @@ public partial class MainWindow : IDisposable
         panel.Activate();
     }
 
-    /// <summary>The notification-area glyph: light on a dark taskbar, dark on a light one.</summary>
+    /// <summary>Draws the icon: the headset's battery, as the person chose, while there is a reading to show, and Neap's glyph otherwise.</summary>
+    /// <remarks>See <see cref="TrayBattery.Of"/> for when the battery is drawn.</remarks>
+    private void PaintTrayPicture()
+    {
+        if (_tray is null) return;
+        var settings = AppSettings.Current;
+        var battery = TrayBattery.Of(AppServices.Headset.Battery, settings.TrayIcon, settings.TrayWarnAt, TrayBatteryPicture.Steps);
+        if (_trayDrawn == (battery, _taskbarLight)) return;
+        _trayDrawn = (battery, _taskbarLight);
+        _tray.Icon = battery is { } drawn
+            ? new WindowIcon(TrayBatteryPicture.Draw(drawn, _taskbarLight ? ThemeVariant.Light : ThemeVariant.Dark))
+            : TrayGlyph(_taskbarLight);
+    }
+
+    /// <summary>Neap's notification-area glyph: light on a dark taskbar, dark on a light one.</summary>
+    private static WindowIcon TrayGlyph(bool light) =>
+        new(AssetLoader.Open(new Uri($"avares://Neap.Desktop/Assets/tray-{(light ? "light" : "dark")}.ico")));
+
+    /// <summary>Whether the taskbar is light.</summary>
     /// <remarks>
     /// Windows has a taskbar shade, set apart from the app's own theme. A Linux
     /// panel gives no such answer and is dark far more often than not, so it
-    /// gets the light glyph.
+    /// is taken as dark.
     /// </remarks>
-    private static WindowIcon TrayPicture()
-    {
-        string shade = OperatingSystem.IsWindows() && TaskbarIsLight() ? "light" : "dark";
-        return new WindowIcon(AssetLoader.Open(new Uri($"avares://Neap.Desktop/Assets/tray-{shade}.ico")));
-    }
+    private static bool TaskbarShadeIsLight() => OperatingSystem.IsWindows() && TaskbarIsLight();
 
     [SupportedOSPlatform("windows")]
     private static bool TaskbarIsLight() =>
         Registry.GetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Windows\CurrentVersion\Themes\Personalize", "SystemUsesLightTheme", 0) is 1;
 
-    /// <summary>Swaps the glyph when Windows reports a colour change, such as the taskbar's shade.</summary>
+    /// <summary>Redraws the icon when Windows reports a colour change, such as the taskbar's shade.</summary>
     private void RepaintTrayPicture(object? sender, PlatformColorValues colours) =>
-        Dispatcher.UIThread.Post(() => _tray?.Icon = TrayPicture());
+        Dispatcher.UIThread.Post(() =>
+        {
+            _taskbarLight = TaskbarShadeIsLight();
+            PaintTrayPicture();
+        });
+
+    /// <summary>Draws the icon again when what it shows, or the warning level, is changed.</summary>
+    public void TrayIconSettingChanged() => PaintTrayPicture();
 
     /// <summary>
     /// Says the headset's state and battery on the notification-area icon, so
@@ -146,6 +174,7 @@ public partial class MainWindow : IDisposable
     private void PaintTray()
     {
         if (_tray is null) return;
+        PaintTrayPicture();
         var status = AppServices.Headset.Status;
         string state = StateCopy.Label(StatusLook.Of(status, AppServices.AudioRoute.SoundElsewhere(status)).Headline);
         string text = AppServices.Headset.Battery is { Settling: false } battery

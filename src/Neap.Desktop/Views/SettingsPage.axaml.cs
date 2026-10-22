@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using Neap.Core.Connection;
 using Neap.Core.Updates;
 using Neap.Desktop.Controls;
 
@@ -34,9 +35,13 @@ public partial class SettingsPage : UserControl
         if (!TrayAvailability.Exists) StartCard.Description = Strings.Get("Settings_StartMinimised");
 
         MiniCard.IsVisible = TrayAvailability.Exists;
+        TrayIconCard.IsVisible = TrayAvailability.Exists;
+        TrayWarnSlider.Minimum = TrayBattery.MinWarnAt;
+        TrayWarnSlider.Maximum = TrayBattery.MaxWarnAt;
 
         _painting = true;
         MiniPanelSwitch.IsChecked = AppSettings.Current.MiniPanel;
+        PaintTrayIcon();
         StartWhenSignedIn.IsChecked = Startup.Enabled;
         CheckForUpdates.IsChecked = AppServices.Updates.Automatic;
         _painting = false;
@@ -62,6 +67,20 @@ public partial class SettingsPage : UserControl
             AppSettings.Update(s => s.MiniPanel = on);
             AppLog.Write(on ? "mini panel: on, a click on the icon opens it" : "mini panel: off, a click on the icon opens the window");
             (TopLevel.GetTopLevel(this) as MainWindow)?.MiniPanelSettingChanged();
+        };
+
+        TrayIconLogo.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconLogo, TrayIconStyle.Logo);
+        TrayIconBattery.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconBattery, TrayIconStyle.Battery);
+        TrayIconPercentage.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconPercentage, TrayIconStyle.Percentage);
+        TrayWarnSlider.ValueChanged += (_, _) =>
+        {
+            if (_painting) return;
+            int level = (int)TrayWarnSlider.Value;
+            if (level == AppSettings.Current.TrayWarnAt) return;
+            AppSettings.Update(s => s.TrayWarnAt = level);
+            AppLog.Write($"notification area: the battery turns red at {level}%");
+            PaintTrayIcon();
+            (TopLevel.GetTopLevel(this) as MainWindow)?.TrayIconSettingChanged();
         };
 
         CheckForUpdates.IsCheckedChanged += (_, _) =>
@@ -145,6 +164,31 @@ public partial class SettingsPage : UserControl
         Grid.SetColumn(UpdateActions, beside ? 1 : 0);
         UpdateActions.VerticalAlignment = beside ? VerticalAlignment.Center : VerticalAlignment.Top;
         NeapCard.RowSpacing = beside ? 0 : _stackedGap;
+    }
+
+    /// <summary>Ticks what the icon shows, sets the warning level, and shows the level only while the icon shows the battery.</summary>
+    private void PaintTrayIcon()
+    {
+        var settings = AppSettings.Current;
+        bool painting = _painting;
+        _painting = true;
+        TrayIconLogo.IsChecked = settings.TrayIcon == TrayIconStyle.Logo;
+        TrayIconBattery.IsChecked = settings.TrayIcon == TrayIconStyle.Battery;
+        TrayIconPercentage.IsChecked = settings.TrayIcon == TrayIconStyle.Percentage;
+        TrayWarnSlider.Value = Math.Clamp(settings.TrayWarnAt, TrayBattery.MinWarnAt, TrayBattery.MaxWarnAt);
+        _painting = painting;
+        TrayWarnText.Text = Strings.Format("Settings_TrayWarnLevel", (int)TrayWarnSlider.Value);
+        TrayWarnCard.IsVisible = TrayAvailability.Exists && settings.TrayIcon != TrayIconStyle.Logo;
+    }
+
+    /// <summary>Keeps the person's choice of what the icon shows, and draws the icon again.</summary>
+    private void ChooseTrayIcon(RadioButton option, TrayIconStyle style)
+    {
+        if (_painting || option.IsChecked != true) return;
+        AppSettings.Update(s => s.TrayIcon = style);
+        AppLog.Write($"notification area: the icon shows {style}");
+        PaintTrayIcon();
+        (TopLevel.GetTopLevel(this) as MainWindow)?.TrayIconSettingChanged();
     }
 
     /// <summary>
