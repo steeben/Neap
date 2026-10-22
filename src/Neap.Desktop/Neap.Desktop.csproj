@@ -10,6 +10,8 @@
     <TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('Windows'))">net10.0;net10.0-windows10.0.19041.0</TargetFrameworks>
     <RootNamespace>Neap.Desktop</RootNamespace>
     <AssemblyName>Neap.Desktop</AssemblyName>
+    <!-- The program's description, which Task Manager shows as its name. -->
+    <AssemblyTitle>$(Product)</AssemblyTitle>
     <ApplicationIcon>Assets\app.ico</ApplicationIcon>
     <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
     <!-- Avalonia's own generated code is not held to the project's doc-comment rules. -->

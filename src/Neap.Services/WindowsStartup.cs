@@ -46,11 +46,12 @@ internal sealed class WindowsStartup : IStartup
 
     private static string ShortcutPath => Path.Combine(StartupFolder, AppInfo.Name + ".lnk");
 
-    /// <summary>The shortcut under the app's earlier name, replaced on sight.</summary>
-    private static string EarlierShortcutPath => Path.Combine(StartupFolder, "Stealth Pro II Control.lnk");
+    /// <summary>The shortcuts under the app's earlier names, replaced on sight.</summary>
+    private static string[] EarlierShortcutPaths =>
+        [Path.Combine(StartupFolder, "Stealth Pro II Control.lnk"), Path.Combine(StartupFolder, "Neap.lnk")];
 
     public bool Enabled =>
-        File.Exists(ShortcutPath) || File.Exists(EarlierShortcutPath) || HasRunEntry();
+        File.Exists(ShortcutPath) || EarlierShortcutPaths.Any(File.Exists) || HasRunEntry();
 
     /// <summary>
     /// Keep the setting pointing at this copy of the app, in the form that
@@ -95,7 +96,7 @@ internal sealed class WindowsStartup : IStartup
         }
         catch (Exception ex)
         {
-            AppLog.Write($"could not {(enabled ? "add Neap to" : "remove Neap from")} the Startup folder: {ex.Message}");
+            AppLog.Write($"could not {(enabled ? "add Turt to" : "remove Turt from")} the Startup folder: {ex.Message}");
             return false;
         }
     }
@@ -128,7 +129,8 @@ internal sealed class WindowsStartup : IStartup
     /// <summary>Removes what an earlier build left behind to start it.</summary>
     private static void RemoveEarlier()
     {
-        if (File.Exists(EarlierShortcutPath)) File.Delete(EarlierShortcutPath);
+        foreach (string earlier in EarlierShortcutPaths)
+            if (File.Exists(earlier)) File.Delete(earlier);
         RemoveRunEntry();
     }
 
