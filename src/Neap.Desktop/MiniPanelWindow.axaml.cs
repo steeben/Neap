@@ -42,6 +42,10 @@ namespace Neap.Desktop;
 /// A close waits for the fade, except when the app is stopping.
 /// </para>
 /// <para>
+/// It is drawn as a card like Home's or as frosted glass, as chosen in
+/// Settings; see <see cref="Frost"/>.
+/// </para>
+/// <para>
 /// A pretend run with <see cref="Pretend.Mini"/> shows it alone as the app's
 /// only window, which stays open so it can be looked at or pictured.
 /// </para>
@@ -70,6 +74,7 @@ public partial class MiniPanelWindow : Window
         Title = Strings.Get("Main_TrayMini");
         Classes.Set("touch", Pretend.Touch);
         BatteryHolder.Content = _battery;
+        if (MiniPanel.Look(AppSettings.Current.MiniPanelLook, HighContrast.Variant(Application.Current!) is not null) == PanelLook.FrostyGlass) Frost();
         if (Pretend.Behind) ShowActivated = false;
 
         Dial.ValueChanged += (_, args) =>
@@ -123,7 +128,8 @@ public partial class MiniPanelWindow : Window
         AppServices.Mix.Changed += Paint;
         Paint();
         Place();
-        if (Motion.Enabled) _ = Fade(0, 1, Rise, 0, Arrive, new CubicEaseOut());
+        RoundGlass();
+        if (Motion.Enabled) _ = Fade(0, 1, Lift, 0, Arrive, new CubicEaseOut());
 
         // Focus begins on the dial, on the way to choose chat apps while the dial waits for
         // them, or else on the first thing that can take it. Given without the focus ring,
@@ -158,11 +164,14 @@ public partial class MiniPanelWindow : Window
 
     private void OnStatus(HeadsetStatus status) => Paint();
 
+    /// <summary>How far the card moves as it fades: not at all over the blur, which stays where the window is and would show where the card had left it.</summary>
+    private double Lift => _blurred ? 0 : Rise;
+
     private async Task FadeAndClose()
     {
         _leaving = true;
         Card.IsHitTestVisible = false;
-        await Fade(1, 0, 0, Rise / 2, Leave, new CubicEaseIn());
+        await Fade(1, 0, 0, Lift / 2, Leave, new CubicEaseIn());
         _left = true;
         Close();
     }

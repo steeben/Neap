@@ -93,4 +93,12 @@ public class MiniPanelTests
     [Fact]
     public void AClickRightAfterTheCloseIsThatCloseAndOpensNothing() =>
         Assert.False(MiniPanel.Opens(false, TimeSpan.FromMilliseconds(80)));
+
+    [Fact]
+    public void ThePanelIsDrawnInTheLookChosen() =>
+        Assert.Equal(PanelLook.FrostyGlass, MiniPanel.Look(PanelLook.FrostyGlass, false));
+
+    [Fact]
+    public void HighContrastDrawsThePanelPlain() =>
+        Assert.Equal(PanelLook.Standard, MiniPanel.Look(PanelLook.FrostyGlass, true));
 }

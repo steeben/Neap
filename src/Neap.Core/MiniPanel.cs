@@ -73,4 +73,10 @@ public static class MiniPanel
     /// <param name="isOpen">Whether the panel is open now.</param>
     /// <param name="sinceClosed">How long ago it last closed.</param>
     public static bool Opens(bool isOpen, TimeSpan sinceClosed) => !isOpen && sinceClosed >= ClickSettle;
+
+    /// <summary>The look the panel is drawn in.</summary>
+    /// <param name="chosen">The look the person chose.</param>
+    /// <param name="highContrast">Whether the person has asked their system for high contrast.</param>
+    /// <remarks>High contrast draws every window in the system's own solid colours, so frosted glass gives way to it.</remarks>
+    public static PanelLook Look(PanelLook chosen, bool highContrast) => highContrast ? PanelLook.Standard : chosen;
 }

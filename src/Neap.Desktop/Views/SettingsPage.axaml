@@ -84,12 +84,52 @@
                     Icon="{StaticResource IconPower}">
                     <ToggleSwitch x:Name="StartWhenSignedIn" />
                 </c:SettingsCard>
-                <!-- The panel is opened by the icon, so it is left out where there is no icon. -->
+                <!-- The panel is opened by the icon, so it and its look are left out where there is no icon. -->
                 <c:SettingsCard
                     x:Name="MiniCard"
                     loc:Uid.Value="Settings_MiniPanel"
                     Icon="{StaticResource IconControls}">
                     <ToggleSwitch x:Name="MiniPanelSwitch" />
+                </c:SettingsCard>
+                <c:SettingsCard
+                    x:Name="LookCard"
+                    loc:Uid.Value="Settings_MiniPanelLook"
+                    Icon="{StaticResource IconControls}">
+                    <Border Classes="segmented" loc:Uid.Value="Settings_MiniPanelLookChoice">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton
+                                x:Name="LookStandard"
+                                loc:Uid.Value="Settings_LookStandard"
+                                GroupName="PanelLook"
+                                Theme="{StaticResource SegmentButton}" />
+                            <RadioButton
+                                x:Name="LookFrosty"
+                                loc:Uid.Value="Settings_LookFrosty"
+                                GroupName="PanelLook"
+                                Theme="{StaticResource SegmentButton}" />
+                        </StackPanel>
+                    </Border>
+                </c:SettingsCard>
+                <c:SettingsCard loc:Uid.Value="Settings_Theme" Icon="{StaticResource IconTheme}">
+                    <Border Classes="segmented" loc:Uid.Value="Settings_ThemeChoice">
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton
+                                x:Name="ThemeSystem"
+                                loc:Uid.Value="Settings_ThemeSystem"
+                                GroupName="Theme"
+                                Theme="{StaticResource SegmentButton}" />
+                            <RadioButton
+                                x:Name="ThemeLight"
+                                loc:Uid.Value="Settings_ThemeLight"
+                                GroupName="Theme"
+                                Theme="{StaticResource SegmentButton}" />
+                            <RadioButton
+                                x:Name="ThemeDark"
+                                loc:Uid.Value="Settings_ThemeDark"
+                                GroupName="Theme"
+                                Theme="{StaticResource SegmentButton}" />
+                        </StackPanel>
+                    </Border>
                 </c:SettingsCard>
                 <!-- What the icon shows, also left out where there is no icon. -->
                 <c:SettingsCard

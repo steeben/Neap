@@ -22,7 +22,8 @@ namespace Neap.Services;
 /// behind a preset, of which its slot holds only the result, which
 /// preset an edited curve came from, whether to keep the Charging Dock's
 /// status ring purple, what the tray icon shows, whether and where to move the
-/// default sound devices as the headset comes and goes, and whether and when to look for a newer version and
+/// default sound devices as the headset comes and goes, whether the app is
+/// drawn light or dark and how the mini panel looks, and whether and when to look for a newer version and
 /// whether its banner has been put away.
 /// </para>
 /// <para>
@@ -132,6 +133,16 @@ public sealed class AppSettings
 
     /// <summary>The charge, as a percentage, at and below which the battery on the icon turns red.</summary>
     [JsonPropertyName("tray_warn_at")] public int TrayWarnAt { get; set; } = TrayBattery.DefaultWarnAt;
+
+    /// <summary>Whether the app is drawn light, dark or as the system is set.</summary>
+    [JsonPropertyName("theme")]
+    [JsonConverter(typeof(JsonStringEnumConverter<ThemeChoice>))]
+    public ThemeChoice Theme { get; set; }
+
+    /// <summary>How the mini panel is drawn.</summary>
+    [JsonPropertyName("mini_panel_look")]
+    [JsonConverter(typeof(JsonStringEnumConverter<PanelLook>))]
+    public PanelLook MiniPanelLook { get; set; }
 
     /// <summary>Whether Neap asks GitHub once a day for a newer version.</summary>
     /// <remarks>

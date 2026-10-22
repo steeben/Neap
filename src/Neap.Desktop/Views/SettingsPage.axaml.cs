@@ -1,8 +1,10 @@
+using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using Neap.Core;
 using Neap.Core.Audio;
 using Neap.Core.Connection;
 using Neap.Core.Updates;
@@ -41,11 +43,14 @@ public partial class SettingsPage : UserControl
         TrayWarnSlider.Minimum = TrayBattery.MinWarnAt;
         TrayWarnSlider.Maximum = TrayBattery.MaxWarnAt;
         SoundDevices.IsVisible = SoundFollowsHeadset.Supported;
+        LookCard.IsVisible = TrayAvailability.Exists;
 
         _painting = true;
         MiniPanelSwitch.IsChecked = AppSettings.Current.MiniPanel;
         PaintTrayIcon();
         SoundFollows.IsChecked = AppServices.SoundFollow.Enabled;
+        (AppSettings.Current.MiniPanelLook == PanelLook.FrostyGlass ? LookFrosty : LookStandard).IsChecked = true;
+        (AppSettings.Current.Theme switch { ThemeChoice.Light => ThemeLight, ThemeChoice.Dark => ThemeDark, _ => ThemeSystem }).IsChecked = true;
         StartWhenSignedIn.IsChecked = Startup.Enabled;
         CheckForUpdates.IsChecked = AppServices.Updates.Automatic;
         _painting = false;
@@ -104,6 +109,18 @@ public partial class SettingsPage : UserControl
             if (!_painting && MicrophoneBackTo.SelectedItem is ComboBoxItem { Tag: string id })
                 AppSettings.Update(s => s.MicrophoneBackTo = id);
         };
+
+        LookFrosty.IsCheckedChanged += (_, _) =>
+        {
+            if (_painting) return;
+            var look = LookFrosty.IsChecked == true ? PanelLook.FrostyGlass : PanelLook.Standard;
+            AppSettings.Update(s => s.MiniPanelLook = look);
+            AppLog.Write($"mini panel look: {look}");
+        };
+
+        ThemeSystem.IsCheckedChanged += OnThemeChosen;
+        ThemeLight.IsCheckedChanged += OnThemeChosen;
+        ThemeDark.IsCheckedChanged += OnThemeChosen;
 
         CheckForUpdates.IsCheckedChanged += (_, _) =>
         {
@@ -171,6 +188,17 @@ public partial class SettingsPage : UserControl
         AppServices.Recorder.Changed -= PaintRecording;
         AppServices.Updates.Changed -= PaintUpdates;
         _ticking.Stop();
+    }
+
+    /// <summary>Keeps the theme chosen and draws the app in it at once.</summary>
+    /// <remarks>Each of the three reports its own change, so only the one now chosen acts.</remarks>
+    private void OnThemeChosen(object? sender, RoutedEventArgs e)
+    {
+        if (_painting || sender is not RadioButton { IsChecked: true } chosen) return;
+        var theme = chosen == ThemeLight ? ThemeChoice.Light : chosen == ThemeDark ? ThemeChoice.Dark : ThemeChoice.System;
+        AppSettings.Update(s => s.Theme = theme);
+        AppLog.Write($"theme: {theme}");
+        (Application.Current as App)?.ChooseTheme();
     }
 
     /// <summary>

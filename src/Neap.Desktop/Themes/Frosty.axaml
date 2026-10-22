@@ -1,0 +1,61 @@
+<ResourceDictionary
+    xmlns="https://github.com/avaloniaui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+
+    <!--
+        The mini panel's frosted glass look, after the Frosty Glass theme for
+        the Windows 11 taskbar: what is behind the panel shows through it,
+        blurred, under a tint, with a one pixel edge lit at the top and the
+        foot and darker between. The rows set into it are a faint wash of
+        the same tint rather than a solid step.
+
+        The tint is heavier than the taskbar's, since the panel holds text
+        and a taskbar mostly icons: text keeps 4.5:1 over the tint even with
+        a white window or a black one behind. Where the system gives no blur,
+        the glass is the solid colour beneath it.
+    -->
+    <ResourceDictionary.ThemeDictionaries>
+        <ResourceDictionary x:Key="Dark">
+            <SolidColorBrush x:Key="NeapGlassBrush" Color="#CC141418" />
+            <SolidColorBrush x:Key="NeapGlassSolidBrush" Color="#1C1C20" />
+            <LinearGradientBrush x:Key="NeapCardStrokeBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#50808080" Offset="0" />
+                <GradientStop Color="#50404040" Offset="0.25" />
+                <GradientStop Color="#50808080" Offset="1" />
+            </LinearGradientBrush>
+
+            <SolidColorBrush x:Key="NeapQuietBrush" Color="#0FFFFFFF" />
+            <SolidColorBrush x:Key="NeapQuietHoverBrush" Color="#1CFFFFFF" />
+            <SolidColorBrush x:Key="NeapInsetBrush" Color="#0FFFFFFF" />
+            <SolidColorBrush x:Key="NeapTrackBrush" Color="#17FFFFFF" />
+            <SolidColorBrush x:Key="NeapTrackHoverBrush" Color="#24FFFFFF" />
+            <SolidColorBrush x:Key="NeapKnobBrush" Color="#1FFFFFFF" />
+            <SolidColorBrush x:Key="NeapKnobEdgeBrush" Color="#40FFFFFF" />
+
+            <SolidColorBrush x:Key="NeapTextSecondaryBrush" Color="#D1FFFFFF" />
+            <SolidColorBrush x:Key="NeapTextTertiaryBrush" Color="#A8FFFFFF" />
+            <SolidColorBrush x:Key="NeapGameTextBrush" Color="#B8A9FF" />
+        </ResourceDictionary>
+
+        <ResourceDictionary x:Key="Light">
+            <SolidColorBrush x:Key="NeapGlassBrush" Color="#C7F3F3F5" />
+            <SolidColorBrush x:Key="NeapGlassSolidBrush" Color="#F3F3F5" />
+            <LinearGradientBrush x:Key="NeapCardStrokeBrush" StartPoint="0%,0%" EndPoint="0%,100%">
+                <GradientStop Color="#99FFFFFF" Offset="0" />
+                <GradientStop Color="#33808080" Offset="0.25" />
+                <GradientStop Color="#66FFFFFF" Offset="1" />
+            </LinearGradientBrush>
+
+            <SolidColorBrush x:Key="NeapQuietBrush" Color="#73FFFFFF" />
+            <SolidColorBrush x:Key="NeapQuietHoverBrush" Color="#A6FFFFFF" />
+            <SolidColorBrush x:Key="NeapInsetBrush" Color="#73FFFFFF" />
+            <SolidColorBrush x:Key="NeapTrackBrush" Color="#12000000" />
+            <SolidColorBrush x:Key="NeapTrackHoverBrush" Color="#1F000000" />
+            <SolidColorBrush x:Key="NeapKnobBrush" Color="#99FFFFFF" />
+            <SolidColorBrush x:Key="NeapKnobEdgeBrush" Color="#26000000" />
+
+            <SolidColorBrush x:Key="NeapTextSecondaryBrush" Color="#AD000000" />
+            <SolidColorBrush x:Key="NeapTextTertiaryBrush" Color="#A6000000" />
+        </ResourceDictionary>
+    </ResourceDictionary.ThemeDictionaries>
+</ResourceDictionary>
