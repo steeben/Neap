@@ -78,6 +78,9 @@ and date.
   icon's menu, it goes in the corner of the screen the menu was on.
 - The mini panel fades up into place as it opens and fades away as it
   closes. With "Show animations in Windows" off, it appears and goes at once.
+- A settings row whose control says more than a switch, such as the
+  microphone's "Muted by the boom arm" in the mini panel, puts the control
+  under the name rather than breaking the name mid-word.
 - The app's text is set in Figtree, and the name beside the mark in Outfit,
   in place of Inter. Both are carried inside the app, so Windows and Linux
   show the same letters. The text is a little rounder and a little wider.
