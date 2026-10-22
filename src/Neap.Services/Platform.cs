@@ -90,6 +90,9 @@ public interface IHotkeys : IDisposable
     /// <summary>A key was registered, refused, changed, or given up.</summary>
     event Action? Changed;
 
+    /// <summary>The mini panel's key was pressed; raised on the interface thread.</summary>
+    event Action? MiniPanelPressed;
+
     /// <summary>Whether this system can register keys at all.</summary>
     bool Supported { get; }
 
@@ -186,6 +189,7 @@ public static class Unsupported
     private sealed class NoHotkeys : IHotkeys
     {
         public event Action? Changed { add { } remove { } }
+        public event Action? MiniPanelPressed { add { } remove { } }
         public bool Supported => false;
         public bool Enabled => false;
         public Shortcut Key(MixKey which) => MixShortcuts.Defaults[which];

@@ -172,7 +172,7 @@
     <value>Keyboard shortcuts</value>
   </data>
   <data name="Mix_KeysCard.Description" xml:space="preserve">
-    <value>Move the mix while you play.</value>
+    <value>Move the mix or open the mini panel while you play.</value>
   </data>
   <data name="Mix_KeysCard.Header" xml:space="preserve">
     <value>Keyboard shortcuts</value>
@@ -186,8 +186,11 @@
   <data name="Mix_CentreRow.Header" xml:space="preserve">
     <value>Back to balanced</value>
   </data>
+  <data name="Mix_MiniRow.Header" xml:space="preserve">
+    <value>Open the mini panel</value>
+  </data>
   <data name="Mix_KeysResetRow.Description" xml:space="preserve">
-    <value>Ctrl + Alt + Page Down, Page Up and Home.</value>
+    <value>Ctrl + Alt + Page Down, Page Up, Home and M.</value>
   </data>
   <data name="Mix_KeysResetRow.Header" xml:space="preserve">
     <value>Default shortcuts</value>

@@ -1,7 +1,7 @@
 namespace Neap.Services;
 
-/// <summary>Which way a shortcut moves the mix.</summary>
-public enum MixKey { TowardGame, TowardChat, Balanced }
+/// <summary>What a shortcut does: moves the mix one way or the other, centres it, or opens the mini panel.</summary>
+public enum MixKey { TowardGame, TowardChat, Balanced, MiniPanel }
 
 /// <summary>
 /// One key combination. Modifiers are the RegisterHotKey flags; Key is a
@@ -56,7 +56,7 @@ public sealed record Shortcut(uint Modifiers, uint Key)
     };
 }
 
-/// <summary>The shortcuts the mix starts with.</summary>
+/// <summary>The shortcuts the app starts with.</summary>
 public static class MixShortcuts
 {
     public static readonly IReadOnlyDictionary<MixKey, Shortcut> Defaults =
@@ -65,5 +65,6 @@ public static class MixShortcuts
             [MixKey.TowardGame] = new(Shortcut.Control | Shortcut.Alt, 0x22),   // Page Down
             [MixKey.TowardChat] = new(Shortcut.Control | Shortcut.Alt, 0x21),   // Page Up
             [MixKey.Balanced] = new(Shortcut.Control | Shortcut.Alt, 0x24),     // Home
+            [MixKey.MiniPanel] = new(Shortcut.Control | Shortcut.Alt, 0x4D),    // M
         };
 }

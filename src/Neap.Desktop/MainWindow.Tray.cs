@@ -59,7 +59,7 @@ public partial class MainWindow : IDisposable
         var open = new NativeMenuItem(Strings.Get("Main_TrayOpen"));
         open.Click += (_, _) => Reveal();
         var mini = new NativeMenuItem(Strings.Get("Main_TrayMini"));
-        mini.Click += (_, _) => ToggleMini();
+        mini.Click += (_, _) => ToggleMini(PointerAt());
         mini.IsVisible = AppSettings.Current.MiniPanel;
         _miniItem = mini;
         var quit = new NativeMenuItem(Strings.Get("Main_TrayQuit"));
@@ -70,11 +70,8 @@ public partial class MainWindow : IDisposable
             Menu = new NativeMenu { open, mini, new NativeMenuItemSeparator(), quit },
         };
         if (Application.Current?.PlatformSettings is { } settings) settings.ColorValuesChanged += RepaintTrayPicture;
-        _tray.Clicked += (_, _) =>
-        {
-            if (MiniPanel.Click(AppSettings.Current.MiniPanel) == TrayClick.ToggleMiniPanel) ToggleMini();
-            else Reveal();
-        };
+        _tray.Clicked += (_, _) => Summon(PointerAt());
+        AppServices.Hotkeys.MiniPanelPressed += () => Summon(NotificationArea());
         if (Application.Current is { } app) TrayIcon.SetIcons(app, new TrayIcons { _tray });
 
         AppServices.Updates.Found += release => Dispatcher.UIThread.Post(() => TellAboutUpdate(release));
@@ -93,21 +90,29 @@ public partial class MainWindow : IDisposable
         if (!on) _mini?.Close();
     }
 
-    /// <summary>Opens the mini panel, or closes it when it is open.</summary>
+    /// <summary>Does what a click on the icon or the mini panel's key does: toggles the panel while it is on, or else brings the window forward.</summary>
+    private void Summon(PixelPoint? at)
+    {
+        if (MiniPanel.Click(AppSettings.Current.MiniPanel) == TrayClick.ToggleMiniPanel) ToggleMini(at);
+        else Reveal();
+    }
+
+    /// <summary>Opens the mini panel by the given point, or closes it when it is open.</summary>
+    /// <param name="click">Where the icon was clicked, or the notification area for its key; null puts it in the main screen's corner.</param>
     /// <remarks>
     /// A click on the icon takes focus from an open panel, which closes it
     /// before the click arrives; <see cref="MiniPanel.Opens"/> tells that
     /// click apart from one that asks to open it.
     /// </remarks>
-    private void ToggleMini()
+    private void ToggleMini(PixelPoint? click)
     {
         if (!MiniPanel.Opens(_mini is not null, Stopwatch.GetElapsedTime(_miniClosedAt)))
         {
             _mini?.Close();
             return;
         }
-        AppLog.Write("mini panel: opened from the notification area");
-        var panel = new MiniPanelWindow { Main = this, Click = PointerAt() };
+        AppLog.Write("mini panel: opened");
+        var panel = new MiniPanelWindow { Main = this, Click = click };
         panel.Closed += (_, _) =>
         {
             _miniClosedAt = panel.ClosedAt;
@@ -126,6 +131,48 @@ public partial class MainWindow : IDisposable
     /// </remarks>
     private static PixelPoint? PointerAt() =>
         OperatingSystem.IsWindows() && GetCursorPos(out var at) ? new PixelPoint(at.X, at.Y) : null;
+
+    /// <summary>The clock's end of the main taskbar, in physical pixels, or null where that cannot be read.</summary>
+    /// <remarks>
+    /// A key press has no pointer on the taskbar to open by, so the panel goes
+    /// by the clock instead: on the taskbar that holds the notification area,
+    /// whichever screen that is. Windows gives that taskbar's place but not the
+    /// clock's, which sits at its right end, or its foot when it stands upright.
+    /// </remarks>
+    private static PixelPoint? NotificationArea()
+    {
+        var bar = new AppBarData { Size = (uint)Marshal.SizeOf<AppBarData>() };
+        if (!OperatingSystem.IsWindows() || SHAppBarMessage(GetTaskbarPosition, ref bar) == 0) return null;
+        var r = bar.Rect;
+        return r.Right - r.Left >= r.Bottom - r.Top
+            ? new PixelPoint(r.Right - 1, (r.Top + r.Bottom) / 2)
+            : new PixelPoint((r.Left + r.Right) / 2, r.Bottom - 1);
+    }
+
+    private const uint GetTaskbarPosition = 5;
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct NativeRect
+    {
+        public int Left;
+        public int Top;
+        public int Right;
+        public int Bottom;
+    }
+
+    [StructLayout(LayoutKind.Sequential)]
+    private struct AppBarData
+    {
+        public uint Size;
+        public IntPtr Window;
+        public uint CallbackMessage;
+        public uint Edge;
+        public NativeRect Rect;
+        public IntPtr Param;
+    }
+
+    [DllImport("shell32.dll")]
+    private static extern UIntPtr SHAppBarMessage(uint message, ref AppBarData data);
 
     [StructLayout(LayoutKind.Sequential)]
     private struct NativePoint
