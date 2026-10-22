@@ -36,6 +36,7 @@ public partial class SettingsPage : UserControl
 
         MiniCard.IsVisible = TrayAvailability.Exists;
         TrayIconCard.IsVisible = TrayAvailability.Exists;
+        NeapControls.AsGroup(TrayIconOptions);
         TrayWarnSlider.Minimum = TrayBattery.MinWarnAt;
         TrayWarnSlider.Maximum = TrayBattery.MaxWarnAt;
 
@@ -72,6 +73,8 @@ public partial class SettingsPage : UserControl
         TrayIconLogo.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconLogo, TrayIconStyle.Logo);
         TrayIconBattery.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconBattery, TrayIconStyle.Battery);
         TrayIconPercentage.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconPercentage, TrayIconStyle.Percentage);
+        TrayIconHeadsetBattery.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconHeadsetBattery, TrayIconStyle.HeadsetBattery);
+        TrayIconHeadsetPercentage.IsCheckedChanged += (_, _) => ChooseTrayIcon(TrayIconHeadsetPercentage, TrayIconStyle.HeadsetPercentage);
         TrayWarnSlider.ValueChanged += (_, _) =>
         {
             if (_painting) return;
@@ -175,6 +178,8 @@ public partial class SettingsPage : UserControl
         TrayIconLogo.IsChecked = settings.TrayIcon == TrayIconStyle.Logo;
         TrayIconBattery.IsChecked = settings.TrayIcon == TrayIconStyle.Battery;
         TrayIconPercentage.IsChecked = settings.TrayIcon == TrayIconStyle.Percentage;
+        TrayIconHeadsetBattery.IsChecked = settings.TrayIcon == TrayIconStyle.HeadsetBattery;
+        TrayIconHeadsetPercentage.IsChecked = settings.TrayIcon == TrayIconStyle.HeadsetPercentage;
         TrayWarnSlider.Value = Math.Clamp(settings.TrayWarnAt, TrayBattery.MinWarnAt, TrayBattery.MaxWarnAt);
         _painting = painting;
         TrayWarnText.Text = Strings.Format("Settings_TrayWarnLevel", (int)TrayWarnSlider.Value);

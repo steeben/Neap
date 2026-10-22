@@ -457,7 +457,7 @@
     <value>Icon by the clock</value>
   </data>
   <data name="Settings_TrayIcon.Description" xml:space="preserve">
-    <value>Shows the headset's battery while it is connected.</value>
+    <value>Shows the headset's battery. The headset styles also show when it is disconnected.</value>
   </data>
   <data name="Settings_TrayIconChoice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
     <value>What the icon by the clock shows</value>
@@ -470,6 +470,12 @@
   </data>
   <data name="Settings_TrayIconPercentage.Content" xml:space="preserve">
     <value>Percentage</value>
+  </data>
+  <data name="Settings_TrayIconHeadsetBattery.Content" xml:space="preserve">
+    <value>Headset and battery</value>
+  </data>
+  <data name="Settings_TrayIconHeadsetPercentage.Content" xml:space="preserve">
+    <value>Headset and percentage</value>
   </data>
   <data name="Settings_TrayWarnAt.Header" xml:space="preserve">
     <value>Low battery</value>

@@ -130,7 +130,8 @@ public partial class MainWindow : IDisposable
     {
         if (_tray is null) return;
         var settings = AppSettings.Current;
-        var battery = TrayBattery.Of(AppServices.Headset.Battery, settings.TrayIcon, settings.TrayWarnAt, TrayBatteryPicture.Steps);
+        var headset = AppServices.Headset;
+        var battery = TrayBattery.Of(headset.Status, headset.Battery, settings.TrayIcon, settings.TrayWarnAt, TrayBatteryPicture.Steps(settings.TrayIcon));
         if (_trayDrawn == (battery, _taskbarLight)) return;
         _trayDrawn = (battery, _taskbarLight);
         _tray.Icon = battery is { } drawn

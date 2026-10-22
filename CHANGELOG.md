@@ -14,9 +14,11 @@ and date.
 ### Added
 
 - The icon by the clock shows the headset's battery: a battery filled to the
-  charge, or the charge as a number, chosen in Settings under "Icon by the
-  clock". It turns red at a low battery level you set, 20% unless changed, and
-  shows a bolt while charging. With no reading, or with "Neap" chosen, it is
+  charge, the charge as a number, or a headset with either in its corner,
+  chosen in Settings under "Icon by the clock". It turns red at a low battery
+  level you set, 20% unless changed, and the battery shows a bolt while
+  charging. The headset styles show a faint, struck-through headset while it
+  is disconnected. Otherwise, with no reading or with "Neap" chosen, it is
   Neap's own icon. Hovering over it still says the charge in words.
 - The mini panel has spatial sound, between noise cancellation and the
   equaliser: Off, Windows Sonic or Dolby Atmos, whichever the system offers. It

@@ -100,11 +100,10 @@ public sealed class AppSettings
     /// </remarks>
     [JsonPropertyName("mini_panel")] public bool MiniPanel { get; set; } = true;
 
-    /// <summary>What the notification-area icon shows: Neap's glyph, the headset's battery, or its charge as a number.</summary>
+    /// <summary>What the notification-area icon shows: Neap's glyph, or the headset's battery in one of four styles; see <see cref="TrayIconStyle"/>.</summary>
     /// <remarks>
     /// The battery by default: how much charge is left is the question the
-    /// icon is most often looked at for. Whatever is chosen, the icon shows
-    /// Neap's glyph while there is no reading.
+    /// icon is most often looked at for.
     /// </remarks>
     [JsonPropertyName("tray_icon")] public TrayIconStyle TrayIcon { get; set; } = TrayIconStyle.Battery;
 

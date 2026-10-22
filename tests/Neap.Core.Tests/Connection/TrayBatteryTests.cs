@@ -4,28 +4,65 @@ namespace Neap.Core.Tests.Connection;
 
 public class TrayBatteryTests
 {
+    private static readonly HeadsetStatus Connected = new(Link.Connected, Route.ChargingDock, "", "");
+
     private static TrayBattery Drawn(int percent, bool charging = false, int warnAt = 20) =>
-        TrayBattery.Of(new BatteryReading(percent, charging), TrayIconStyle.Battery, warnAt, 20)!.Value;
+        TrayBattery.Of(Connected, new BatteryReading(percent, charging), TrayIconStyle.Battery, warnAt, 20)!.Value;
 
     [Theory]
     [InlineData(TrayIconStyle.Battery)]
     [InlineData(TrayIconStyle.Percentage)]
-    public void NoReadingShowsTheGlyph(TrayIconStyle style) => Assert.Null(TrayBattery.Of(null, style, 20, 20));
+    [InlineData(TrayIconStyle.HeadsetBattery)]
+    [InlineData(TrayIconStyle.HeadsetPercentage)]
+    public void NoReadingWhileConnectedShowsTheGlyph(TrayIconStyle style) =>
+        Assert.Null(TrayBattery.Of(Connected, null, style, 20, 20));
 
-    [Fact]
-    public void ASettlingReadingShowsTheGlyph() =>
-        Assert.Null(TrayBattery.Of(new BatteryReading(40, false, Settling: true), TrayIconStyle.Battery, 20, 20));
+    [Theory]
+    [InlineData(TrayIconStyle.Battery)]
+    [InlineData(TrayIconStyle.HeadsetBattery)]
+    public void ASettlingReadingShowsTheGlyph(TrayIconStyle style) =>
+        Assert.Null(TrayBattery.Of(Connected, new BatteryReading(40, false, Settling: true), style, 20, 20));
 
     [Theory]
     [InlineData(TrayIconStyle.Logo)]
     [InlineData((TrayIconStyle)7)]
     public void TheGlyphChosenOrAStyleNotKnownShowsTheGlyph(TrayIconStyle style) =>
-        Assert.Null(TrayBattery.Of(new BatteryReading(80, false), style, 20, 20));
+        Assert.Null(TrayBattery.Of(Connected, new BatteryReading(80, false), style, 20, 20));
+
+    [Theory]
+    [InlineData(TrayIconStyle.Percentage)]
+    [InlineData(TrayIconStyle.HeadsetBattery)]
+    [InlineData(TrayIconStyle.HeadsetPercentage)]
+    public void KeepsTheChosenStyle(TrayIconStyle style) =>
+        Assert.Equal(style, TrayBattery.Of(Connected, new BatteryReading(80, false), style, 20, 20)!.Value.Style);
+
+    [Theory]
+    [InlineData(Link.Absent, Route.Unknown, true)]
+    [InlineData(Link.Quiet, Route.ChargingDock, true)]
+    [InlineData(Link.Quiet, Route.UsbTransmitter, true)]
+    [InlineData(Link.Connecting, Route.Unknown, false)]
+    [InlineData(Link.Silent, Route.UsbTransmitter, false)]
+    public void AHeadsetStyleSaysDisconnectedOnlyWhenItIsKnown(Link link, Route route, bool disconnected)
+    {
+        var drawn = TrayBattery.Of(new HeadsetStatus(link, route, "", ""), null, TrayIconStyle.HeadsetBattery, 20, 20);
+        Assert.Equal(disconnected, drawn is { Disconnected: true });
+        if (!disconnected) Assert.Null(drawn);
+    }
+
+    [Theory]
+    [InlineData(TrayIconStyle.Battery)]
+    [InlineData(TrayIconStyle.Percentage)]
+    public void TheOtherStylesShowTheGlyphWhenDisconnected(TrayIconStyle style) =>
+        Assert.Null(TrayBattery.Of(new HeadsetStatus(Link.Absent, Route.Unknown, "", ""), null, style, 20, 20));
 
     [Fact]
-    public void KeepsTheChosenStyle() =>
-        Assert.Equal(TrayIconStyle.Percentage,
-            TrayBattery.Of(new BatteryReading(80, false), TrayIconStyle.Percentage, 20, 20)!.Value.Style);
+    public void SwitchedOffOnItsCableTheHeadsetStyleShowsTheCharge()
+    {
+        var cable = new HeadsetStatus(Link.Quiet, Route.DirectUsb, "", "");
+        var drawn = TrayBattery.Of(cable, new BatteryReading(60, true), TrayIconStyle.HeadsetPercentage, 20, 20)!.Value;
+        Assert.False(drawn.Disconnected);
+        Assert.Equal(60, drawn.Percent);
+    }
 
     [Theory]
     [InlineData(100, 20)]
