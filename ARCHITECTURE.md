@@ -183,8 +183,11 @@ to the dock while the headset is on the dongle — everything looks connected
 and no sound arrives. `Mix/SessionMix.cs` notices the chat application
 playing somewhere other than the headset, and `Audio/Routing.cs` maps
 endpoints back to the transmitter they belong to so the app can say which one
-Windows should be using. It says it; it does not switch it. Switching was
-considered and dropped as too unreliable to do behind someone's back.
+Windows should be using. It says it, and switches it only for someone who
+has asked: `Connection/DeviceSwitch.cs` decides when the defaults move to the
+headset and back, and `Services/SoundFollowsHeadset.cs` carries it out while
+the setting is on. Switching unasked was dropped as too unreliable to do
+behind someone's back.
 
 Two things widen it. Windows keeps a separate default for communications,
 which does not move when the output is changed, so that is checked as well.

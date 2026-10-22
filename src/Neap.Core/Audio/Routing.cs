@@ -10,7 +10,16 @@ using NState = NAudio.CoreAudioApi.DeviceState;
 namespace Neap.Core.Audio;
 
 /// <summary>Where Windows is sending sound, and which transmitter owns it.</summary>
-public sealed record Routed(string Endpoint, string Product);
+/// <param name="Endpoint">What the system calls the device.</param>
+/// <param name="Product">The transmitter or headset behind it, or empty for anything else.</param>
+/// <param name="Id">The system's identifier for the device, where it gives one.</param>
+public sealed record Routed(string Endpoint, string Product, string Id = "");
+
+/// <summary>One of the system's outputs or microphones, as offered for choosing.</summary>
+/// <param name="Id">The system's identifier for it, which stays the same across restarts.</param>
+/// <param name="Name">What the system calls it.</param>
+/// <param name="Product">The transmitter or headset behind it, as on <see cref="Routed.Product"/>; empty for anything else.</param>
+public sealed record AudioDevice(string Id, string Name, string Product);
 
 /// <summary>
 /// Works out which transmitter each Windows audio endpoint belongs to.
@@ -50,9 +59,26 @@ public static class Routing
             using var device = devices.GetDefaultAudioEndpoint(
                 output ? NFlow.Render : NFlow.Capture,
                 communications ? NRole.Communications : NRole.Multimedia);
-            return new Routed(device.FriendlyName, ProductOf(device));
+            return new Routed(device.FriendlyName, ProductOf(device), device.ID);
         }
         catch { return null; }
+    }
+
+    /// <summary>The active outputs or microphones, in the order Windows lists them.</summary>
+    /// <returns>Empty as well when Windows cannot be asked.</returns>
+    public static List<AudioDevice> Devices(bool output)
+    {
+        var found = new List<AudioDevice>();
+        try
+        {
+            using var devices = new MMDeviceEnumerator();
+            foreach (var device in devices.EnumerateAudioEndPoints(
+                         output ? NFlow.Render : NFlow.Capture, NState.Active))
+                using (device)
+                    found.Add(new AudioDevice(device.ID, device.FriendlyName, ProductOf(device)));
+        }
+        catch (COMException) { found.Clear(); }
+        return found;
     }
 
     /// <summary>Lists the active endpoints belonging to one transmitter, by product id.</summary>

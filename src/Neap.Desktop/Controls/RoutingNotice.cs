@@ -17,8 +17,9 @@ namespace Neap.Desktop.Controls;
 /// is <see cref="RoutingStory"/>'s.
 /// </para>
 /// <para>
-/// It opens the system's own sound settings. The app does not change the
-/// default device itself: that is too unreliable to do on anyone's behalf.
+/// It opens the system's own sound settings. The app changes the default
+/// device itself only for someone who has asked it to; see
+/// <see cref="SoundFollowsHeadset"/>.
 /// </para>
 /// </remarks>
 public sealed class RoutingNotice : Notice

@@ -25,6 +25,7 @@ public static class AppServices
     public static IRing Ring { get; private set; } = null!;
     public static SessionRecorder Recorder { get; private set; } = null!;
     public static MicFollowsHeadset MicFollow { get; private set; } = null!;
+    public static SoundFollowsHeadset SoundFollow { get; private set; } = null!;
     public static UpdateService Updates { get; private set; } = null!;
 
     /// <summary>Where the headset's transmitters are looked for.</summary>
@@ -53,6 +54,7 @@ public static class AppServices
             : new AutoSwitchService(Profiles, Headset, AutoSwitchService.RunningPrograms, MicrophoneUsers.Now);
         Recorder = new SessionRecorder(Headset);
         MicFollow = new MicFollowsHeadset(Headset);
+        SoundFollow = new SoundFollowsHeadset(Headset, AudioRoute);
         Hotkeys = Platform.Current.CreateHotkeys(Mix);
         Hotkeys.Enable(Hotkeys.Supported && AppSettings.Current.MixHotkeys && !Pretend.Active);
         Updates = new UpdateService();
@@ -77,6 +79,7 @@ public static class AppServices
         Updates?.Dispose();
         Recorder?.Dispose();
         MicFollow?.Dispose();
+        SoundFollow?.Dispose();
         Hotkeys?.Dispose();
         Mix?.Dispose();
         Noise?.Dispose();

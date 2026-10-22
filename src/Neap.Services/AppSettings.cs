@@ -20,7 +20,8 @@ namespace Neap.Services;
 /// control the headset has no place for, the parametric adjustments
 /// behind a preset, of which its slot holds only the result, which
 /// preset an edited curve came from, whether to keep the Charging Dock's
-/// status ring purple, and whether and when to look for a newer version and
+/// status ring purple, whether and where to move the default sound devices
+/// as the headset comes and goes, and whether and when to look for a newer version and
 /// whether its banner has been put away.
 /// </para>
 /// <para>
@@ -90,6 +91,26 @@ public sealed class AppSettings
     /// arm is seen down; see <see cref="Core.Settings.Microphone.SystemMuteFor"/>.
     /// </remarks>
     [JsonPropertyName("mic_muted_by_headset")] public bool MicMutedByHeadset { get; set; }
+
+    /// <summary>Whether the system's default output and microphone move to the headset when it connects, and back when it goes.</summary>
+    /// <remarks>
+    /// Off by default: the defaults are the person's to choose, and moving
+    /// them is not something to do without being asked.
+    /// </remarks>
+    [JsonPropertyName("sound_follows_headset")] public bool SoundFollowsHeadset { get; set; }
+
+    /// <summary>The output to go back to when the headset goes, by the system's id, or empty for the one before the headset's.</summary>
+    [JsonPropertyName("sound_back_to")] public string SoundBackTo { get; set; } = "";
+
+    /// <summary>The microphone to go back to when the headset goes, likewise.</summary>
+    [JsonPropertyName("microphone_back_to")] public string MicrophoneBackTo { get; set; } = "";
+
+    /// <summary>The output that was the default before the headset's, by the system's id, or empty.</summary>
+    /// <remarks>Kept across restarts, so a restart while the headset is on still puts it back.</remarks>
+    [JsonPropertyName("sound_before_headset")] public string SoundBeforeHeadset { get; set; } = "";
+
+    /// <summary>The microphone that was the default before the headset's, likewise.</summary>
+    [JsonPropertyName("microphone_before_headset")] public string MicrophoneBeforeHeadset { get; set; } = "";
 
     /// <summary>Whether a click on the tray icon opens the mini panel rather than the window.</summary>
     /// <remarks>
