@@ -1,8 +1,10 @@
+using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using Neap.Core;
 using Neap.Core.Updates;
 using Neap.Desktop.Controls;
 
@@ -34,9 +36,12 @@ public partial class SettingsPage : UserControl
         if (!TrayAvailability.Exists) StartCard.Description = Strings.Get("Settings_StartMinimised");
 
         MiniCard.IsVisible = TrayAvailability.Exists;
+        LookCard.IsVisible = TrayAvailability.Exists;
 
         _painting = true;
         MiniPanelSwitch.IsChecked = AppSettings.Current.MiniPanel;
+        (AppSettings.Current.MiniPanelLook == PanelLook.FrostyGlass ? LookFrosty : LookStandard).IsChecked = true;
+        (AppSettings.Current.Theme switch { ThemeChoice.Light => ThemeLight, ThemeChoice.Dark => ThemeDark, _ => ThemeSystem }).IsChecked = true;
         StartWhenSignedIn.IsChecked = Startup.Enabled;
         CheckForUpdates.IsChecked = AppServices.Updates.Automatic;
         _painting = false;
@@ -63,6 +68,18 @@ public partial class SettingsPage : UserControl
             AppLog.Write(on ? "mini panel: on, a click on the icon opens it" : "mini panel: off, a click on the icon opens the window");
             (TopLevel.GetTopLevel(this) as MainWindow)?.MiniPanelSettingChanged();
         };
+
+        LookFrosty.IsCheckedChanged += (_, _) =>
+        {
+            if (_painting) return;
+            var look = LookFrosty.IsChecked == true ? PanelLook.FrostyGlass : PanelLook.Standard;
+            AppSettings.Update(s => s.MiniPanelLook = look);
+            AppLog.Write($"mini panel look: {look}");
+        };
+
+        ThemeSystem.IsCheckedChanged += OnThemeChosen;
+        ThemeLight.IsCheckedChanged += OnThemeChosen;
+        ThemeDark.IsCheckedChanged += OnThemeChosen;
 
         CheckForUpdates.IsCheckedChanged += (_, _) =>
         {
@@ -129,6 +146,17 @@ public partial class SettingsPage : UserControl
         AppServices.Recorder.Changed -= PaintRecording;
         AppServices.Updates.Changed -= PaintUpdates;
         _ticking.Stop();
+    }
+
+    /// <summary>Keeps the theme chosen and draws the app in it at once.</summary>
+    /// <remarks>Each of the three reports its own change, so only the one now chosen acts.</remarks>
+    private void OnThemeChosen(object? sender, RoutedEventArgs e)
+    {
+        if (_painting || sender is not RadioButton { IsChecked: true } chosen) return;
+        var theme = chosen == ThemeLight ? ThemeChoice.Light : chosen == ThemeDark ? ThemeChoice.Dark : ThemeChoice.System;
+        AppSettings.Update(s => s.Theme = theme);
+        AppLog.Write($"theme: {theme}");
+        (Application.Current as App)?.ChooseTheme();
     }
 
     /// <summary>

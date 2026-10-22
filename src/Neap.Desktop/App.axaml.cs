@@ -3,6 +3,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using Avalonia.Markup.Xaml.Styling;
 using Avalonia.Styling;
+using Neap.Core;
 using Neap.Desktop.Localization;
 
 namespace Neap.Desktop;
@@ -19,7 +20,8 @@ public class App : Application
 
         // Someone who has asked their system for high contrast gets its
         // colours, and gets them as they change while the app is open. A
-        // pretend run can be shown in either theme whatever the system is set to.
+        // pretend run can be shown in either theme whatever the system is set to,
+        // and anyone can keep the app light or dark whatever the system says.
         HighContrast.Install(this);
         FluentKeys.Install(this);
         ChooseTheme();
@@ -43,10 +45,15 @@ public class App : Application
         base.OnFrameworkInitializationCompleted();
     }
 
-    /// <summary>Picks high contrast, or the theme a pretend run asked for, or the system's own.</summary>
-    private void ChooseTheme() => RequestedThemeVariant =
+    /// <summary>Picks high contrast, or the theme a pretend run asked for, or the one chosen in Settings.</summary>
+    internal void ChooseTheme() => RequestedThemeVariant =
         HighContrast.Variant(this)
         ?? (Pretend.Theme is { } theme
             ? theme == PretendTheme.Dark ? ThemeVariant.Dark : ThemeVariant.Light
-            : ThemeVariant.Default);
+            : AppSettings.Current.Theme switch
+            {
+                ThemeChoice.Light => ThemeVariant.Light,
+                ThemeChoice.Dark => ThemeVariant.Dark,
+                _ => ThemeVariant.Default,
+            });
 }

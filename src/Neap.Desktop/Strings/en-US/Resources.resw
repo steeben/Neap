@@ -459,6 +459,33 @@
   <data name="Settings_MiniPanel.Description" xml:space="preserve">
     <value>A click on the icon by the clock opens quick controls instead of the window.</value>
   </data>
+  <data name="Settings_Theme.Header" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Settings_ThemeChoice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
+    <value>Theme</value>
+  </data>
+  <data name="Settings_ThemeSystem.Content" xml:space="preserve">
+    <value>System</value>
+  </data>
+  <data name="Settings_ThemeLight.Content" xml:space="preserve">
+    <value>Light</value>
+  </data>
+  <data name="Settings_ThemeDark.Content" xml:space="preserve">
+    <value>Dark</value>
+  </data>
+  <data name="Settings_MiniPanelLook.Header" xml:space="preserve">
+    <value>Mini panel look</value>
+  </data>
+  <data name="Settings_MiniPanelLookChoice.[using:Microsoft.UI.Xaml.Automation]AutomationProperties.Name" xml:space="preserve">
+    <value>Mini panel look</value>
+  </data>
+  <data name="Settings_LookStandard.Content" xml:space="preserve">
+    <value>Standard</value>
+  </data>
+  <data name="Settings_LookFrosty.Content" xml:space="preserve">
+    <value>Frosty glass</value>
+  </data>
   <data name="Settings_StartMinimised" xml:space="preserve">
     <value>Starts minimised, as this desktop has no notification area.</value>
   </data>
