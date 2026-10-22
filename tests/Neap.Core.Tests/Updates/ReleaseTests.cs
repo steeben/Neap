@@ -12,7 +12,7 @@ public class ReleaseTests
         bool draft = false,
         bool prerelease = false,
         string host = "github.com",
-        string repository = "steeben/Neap",
+        string repository = "steeben/Turt",
         string? zipName = null,
         string? body = "## Notes\n\n- It does a thing.")
     {
@@ -22,7 +22,7 @@ public class ReleaseTests
         return $$"""
             {
               "tag_name": "{{tag}}",
-              "html_url": "https://github.com/steeben/Neap/releases/tag/{{tag}}",
+              "html_url": "https://github.com/steeben/Turt/releases/tag/{{tag}}",
               "draft": {{(draft ? "true" : "false")}},
               "prerelease": {{(prerelease ? "true" : "false")}},
               "body": {{(body is null ? "null" : System.Text.Json.JsonSerializer.Serialize(body))}},
@@ -43,7 +43,7 @@ public class ReleaseTests
         Assert.Equal("Turt-0.3.0-win-x64.zip", release.ZipName);
         Assert.EndsWith("/v0.3.0/Turt-0.3.0-win-x64.zip", release.Zip?.AbsoluteUri, StringComparison.Ordinal);
         Assert.EndsWith("/v0.3.0/Turt-0.3.0-win-x64.zip.sha256", release.Hash?.AbsoluteUri, StringComparison.Ordinal);
-        Assert.Equal("https://github.com/steeben/Neap/releases/tag/v0.3.0", release.Page.AbsoluteUri);
+        Assert.Equal("https://github.com/steeben/Turt/releases/tag/v0.3.0", release.Page.AbsoluteUri);
     }
 
     [Theory]
@@ -86,7 +86,7 @@ public class ReleaseTests
 
         var release = Release.Parse(noZip, installable: false);
         Assert.Equal(new Version(0, 3, 0), release.Version);
-        Assert.Equal("https://github.com/steeben/Neap/releases/tag/v0.3.0", release.Page.AbsoluteUri);
+        Assert.Equal("https://github.com/steeben/Turt/releases/tag/v0.3.0", release.Page.AbsoluteUri);
         Assert.Null(release.Zip);
         Assert.Null(release.Hash);
     }
@@ -102,7 +102,7 @@ public class ReleaseTests
     [Fact]
     public void ASystemThatPointsToThePageStillRefusesALinkOutsideNeapsRepository()
     {
-        string elsewhere = Json().Replace("https://github.com/steeben/Neap/", "https://github.com/someone/Else/", StringComparison.Ordinal);
+        string elsewhere = Json().Replace("https://github.com/steeben/Turt/", "https://github.com/someone/Else/", StringComparison.Ordinal);
 
         Assert.Throws<FormatException>(() => Release.Parse(elsewhere, installable: false));
     }
@@ -155,8 +155,8 @@ public class ReleaseTests
 
     [Theory]
     [InlineData("someone/else")]
-    [InlineData("steeben/Neapx")]
-    [InlineData("steeben/Neap/../Other")]
+    [InlineData("steeben/Turtx")]
+    [InlineData("steeben/Turt/../Other")]
     public void ADownloadFromAnotherRepositoryIsRefused(string repository)
     {
         Assert.Throws<FormatException>(() => Release.Parse(Json(repository: repository)));
@@ -165,7 +165,7 @@ public class ReleaseTests
     [Fact]
     public void AReleasePageInAnotherRepositoryIsRefused()
     {
-        string other = Json().Replace("\"html_url\": \"https://github.com/steeben/Neap/",
+        string other = Json().Replace("\"html_url\": \"https://github.com/steeben/Turt/",
             "\"html_url\": \"https://github.com/someone/else/", StringComparison.Ordinal);
 
         Assert.Throws<FormatException>(() => Release.Parse(other));
@@ -175,7 +175,7 @@ public class ReleaseTests
     public void ARepositoryNameInADifferentCaseIsStillNeaps()
     {
         // GitHub treats the two as the same repository.
-        Assert.Equal(new Version(0, 3, 0), Release.Parse(Json(repository: "Steeben/neap")).Version);
+        Assert.Equal(new Version(0, 3, 0), Release.Parse(Json(repository: "Steeben/turt")).Version);
     }
 
     [Fact]

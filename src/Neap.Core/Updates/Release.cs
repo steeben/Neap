@@ -25,10 +25,10 @@ namespace Neap.Core.Updates;
 public sealed partial record Release(Version Version, Uri Page, Uri? Zip, Uri? Hash, string Notes)
 {
     /// <summary>Where GitHub describes the latest release, leaving out drafts and pre-releases.</summary>
-    public static Uri Latest { get; } = new("https://api.github.com/repos/steeben/Neap/releases/latest");
+    public static Uri Latest { get; } = new("https://api.github.com/repos/steeben/Turt/releases/latest");
 
     /// <summary>Where every link in a release must start: Neap's own repository, so a release can't name another's files.</summary>
-    private const string Repository = "/steeben/Neap/";
+    private const string Repository = "/steeben/Turt/";
 
     /// <summary>The zip's file name, as the release workflow names it.</summary>
     public string ZipName => ZipNameFor(Version);
