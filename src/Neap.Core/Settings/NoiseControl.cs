@@ -3,12 +3,25 @@ namespace Neap.Core.Settings;
 /// <summary>What the headset does with the sound around it.</summary>
 public enum NoiseMode { Off, Cancelling, Transparency }
 
+/// <summary>Which modes a press of the Mode button steps through, beyond the headset's own on/off.</summary>
+public enum NoiseCycle
+{
+    /// <summary>The headset's own: noise cancellation on and off.</summary>
+    None,
+
+    /// <summary>Off, noise cancellation, then transparency.</summary>
+    AllThree,
+
+    /// <summary>Noise cancellation and transparency, never off.</summary>
+    SkippingOff,
+}
+
 /// <summary>One write to the headset: a registry key and its value.</summary>
 public readonly record struct SettingWrite(int Key, int Value);
 
 /// <summary>
 /// Noise control: noise cancellation, transparency and off, and the Mode
-/// button's three-step cycle through them.
+/// button's cycles through them.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -24,12 +37,12 @@ public readonly record struct SettingWrite(int Key, int Value);
 /// <para>
 /// The headset runs the Mode button itself and only toggles noise
 /// cancellation: a press shows as <see cref="AncKey"/> changing after the
-/// headset has already changed it. With <see cref="Cycling"/> on, each press
-/// is taken as a step to the next mode instead, and the writes that finish
-/// the step are returned. Going to noise cancellation lands cleanly, because
-/// the level is put back while the headset is off, ready for the press that
-/// turns it on. Going to transparency passes through off: the headset turns
-/// noise cancellation off before anything here can answer.
+/// headset has already changed it. With a <see cref="Cycle"/> chosen, each
+/// press is taken as a step to the next mode instead, and the writes that
+/// finish the step are returned. Going from off to noise cancellation lands
+/// cleanly, because the level is put back while the headset is off, ready for
+/// the press that turns it on. Every other step passes through off: the
+/// headset turns noise cancellation off before anything here can answer.
 /// </para>
 /// </remarks>
 /// <param name="blocking">The level noise cancellation was last used at, or null if never.</param>
@@ -53,8 +66,8 @@ public sealed class NoiseControl(int? blocking)
     /// <summary>Gets the level noise cancellation is used at.</summary>
     public int Blocking { get; private set; } = blocking is > 0 and <= 100 ? blocking.Value : FullBlocking;
 
-    /// <summary>Gets or sets whether a press of the Mode button steps through all three modes.</summary>
-    public bool Cycling { get; set; }
+    /// <summary>Gets or sets which modes a press of the Mode button steps through.</summary>
+    public NoiseCycle Cycle { get; set; }
 
     /// <summary>Sets the level noise cancellation comes back at, such as one a profile saved.</summary>
     public void SetBlocking(int level) => Blocking = Math.Clamp(level, LeastBlocking, 100);
@@ -71,12 +84,14 @@ public sealed class NoiseControl(int? blocking)
         _ => NoiseMode.Cancelling,
     };
 
-    /// <summary>The mode a press of the Mode button moves on to while cycling.</summary>
-    public static NoiseMode Next(NoiseMode mode) => mode switch
+    /// <summary>The mode a press of the Mode button moves on to in a cycle.</summary>
+    /// <remarks>Off moves on to noise cancellation in either cycle, as the headset's own press does.</remarks>
+    public static NoiseMode Next(NoiseMode mode, NoiseCycle cycle) => (mode, cycle) switch
     {
-        NoiseMode.Off => NoiseMode.Cancelling,
-        NoiseMode.Cancelling => NoiseMode.Transparency,
-        _ => NoiseMode.Off,
+        (NoiseMode.Cancelling, _) => NoiseMode.Transparency,
+        (NoiseMode.Transparency, NoiseCycle.SkippingOff) => NoiseMode.Cancelling,
+        (NoiseMode.Transparency, _) => NoiseMode.Off,
+        _ => NoiseMode.Cancelling,
     };
 
     /// <summary>Take in the headset's current values of the two keys.</summary>
@@ -94,7 +109,7 @@ public sealed class NoiseControl(int? blocking)
         _anc = anc;
         _level = level;
         if (Mode == NoiseMode.Cancelling) Blocking = level!.Value;
-        return pressed && Cycling && before is NoiseMode from ? Choose(Next(from)) : [];
+        return pressed && Cycle != NoiseCycle.None && before is NoiseMode from ? Choose(Next(from, Cycle)) : [];
     }
 
     /// <summary>The writes that take the headset to a mode, in the order to send them.</summary>

@@ -9,7 +9,7 @@ public class ProfileEditsTests
 {
     private static ProfileSettings With(string? game, string? mic, int monitoring = 50) => new(
         NoiseMode.Cancelling, 80, false, 0, 0, false, 0, false, monitoring,
-        game, mic, SpatialFormat.Off, 0, new ModeChoice(0, false), 1);
+        game, mic, SpatialFormat.Off, 0, new ModeChoice(0, NoiseCycle.None), 1);
 
     [Fact]
     public void TheSameSettingsAreNotEdited() =>
@@ -34,7 +34,7 @@ public class ProfileEditsTests
     /// <summary>An Atlas Air has no noise cancellation, AI noise reduction, dial or Mode button, and reads them as nothing.</summary>
     private static ProfileSettings OnAnAtlasAir(int autoShutoff = 0) => new(
         NoiseMode.Off, 0, false, 0, 0, false, 0, false, 50,
-        "Bass Boost", "Clarity", SpatialFormat.Off, autoShutoff, new ModeChoice(0, false), 0);
+        "Bass Boost", "Clarity", SpatialFormat.Off, autoShutoff, new ModeChoice(0, NoiseCycle.None), 0);
 
     [Fact]
     public void AStealthProIIsProfileIsNotEditedByWhatTheAtlasAirLacks()

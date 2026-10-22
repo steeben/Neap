@@ -8,7 +8,7 @@ public class ProfileCheckTests
 {
     private static ProfileSettings With(string? gamePreset, string? micPreset) => new(
         NoiseMode.Cancelling, 80, false, 0, 0, false, 0, false, 50,
-        gamePreset, micPreset, SpatialFormat.Off, 0, new ModeChoice(0, false), 1);
+        gamePreset, micPreset, SpatialFormat.Off, 0, new ModeChoice(0, NoiseCycle.None), 1);
 
     [Fact]
     public void NothingIsMissingWhenBothPresetsAreStillThere() =>

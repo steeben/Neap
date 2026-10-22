@@ -8,7 +8,7 @@ public class ProfileAssignmentTests
 {
     private static readonly ProfileSettings Blank = new(
         NoiseMode.Off, 0, false, 0, 0, false, 0, false, 0, null, null,
-        SpatialFormat.Off, 0, new ModeChoice(0, false), 1);
+        SpatialFormat.Off, 0, new ModeChoice(0, NoiseCycle.None), 1);
 
     private static Profile With(string id, string name, params string[] apps) => new(id, name, apps, [], Blank);
 

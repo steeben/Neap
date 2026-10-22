@@ -7,14 +7,14 @@ namespace Neap.Desktop.Controls;
 
 /// <summary>
 /// What the Mode button does, with every job in view as a radio button: the
-/// headset's own, and the app's cycle through noise control.
+/// headset's own, and the app's cycles through noise control.
 /// </summary>
 /// <remarks>
 /// <para>
-/// Laid out as <see cref="SettingChoice"/> is. The difference is the cycle,
-/// which the headset does not have: choosing it sets the headset to noise
+/// Laid out as <see cref="SettingChoice"/> is. The difference is the cycles,
+/// which the headset does not have: choosing one sets the headset to noise
 /// cancellation on/off and has the app do the rest, so it works only while
-/// the app is running, and the panel says so while it is chosen.
+/// the app is running, and the panel says so while one is chosen.
 /// </para>
 /// <para>
 /// The radio group's automation id is "mode_button_function", the setting it
@@ -82,7 +82,12 @@ public sealed class ModeButtonChoice : UserControl
         NeapControls.AsGroup(_options);
         foreach (var choice in ModeButton.Choices)
         {
-            string label = choice.Cycles ? Strings.Get("Mode_NoiseCycle") : OptionNames.For(key, choice.Function);
+            string label = choice.Cycle switch
+            {
+                NoiseCycle.AllThree => Strings.Get("Mode_NoiseCycle"),
+                NoiseCycle.SkippingOff => Strings.Get("Mode_NoiseCycleSkipsOff"),
+                _ => OptionNames.For(key, choice.Function),
+            };
             var button = NeapControls.ChoiceRow(label, key.Name);
             button.Tag = choice;
             button.IsCheckedChanged += (_, _) =>
@@ -97,13 +102,13 @@ public sealed class ModeButtonChoice : UserControl
     {
         if (_painting) return;
         if (_link.Value != choice.Function) _link.Write(choice.Function);
-        AppServices.Noise.SetCycling(choice.Cycles);
+        AppServices.Noise.SetCycle(choice.Cycle);
         Paint();
     }
 
     private void Paint()
     {
-        var shown = ModeButton.Shown(_link.Value, AppServices.Noise.Cycling);
+        var shown = ModeButton.Shown(_link.Value, AppServices.Noise.Cycle);
         _options.IsEnabled = shown is not null && _link.CanWrite;
         _painting = true;
         try
@@ -112,6 +117,6 @@ public sealed class ModeButtonChoice : UserControl
                 button.IsChecked = button.Tag is ModeChoice choice && choice == shown;
         }
         finally { _painting = false; }
-        _needsApp.IsVisible = shown is { Cycles: true };
+        _needsApp.IsVisible = shown is { Cycle: not NoiseCycle.None };
     }
 }

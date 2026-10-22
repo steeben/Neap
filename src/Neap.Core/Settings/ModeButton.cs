@@ -2,15 +2,15 @@ namespace Neap.Core.Settings;
 
 /// <summary>A job the Mode button can be given.</summary>
 /// <param name="Function">The value written to the headset, a key of <see cref="Registry.ModeButtonOptions"/>.</param>
-/// <param name="Cycles">Whether the app turns noise cancellation's on and off into the three-step cycle.</param>
-public readonly record struct ModeChoice(int Function, bool Cycles);
+/// <param name="Cycle">Which cycle through noise control the app turns noise cancellation's on and off into, if any.</param>
+public readonly record struct ModeChoice(int Function, NoiseCycle Cycle);
 
 /// <summary>The jobs the Mode button can be given, the headset's own and the app's.</summary>
 /// <remarks>
-/// The three-step cycle through noise control is not a function the headset
-/// has. On the headset it is noise cancellation on/off, and the app does the
-/// rest; see <see cref="NoiseControl"/>. So it is offered next to that one,
-/// and shown only while the headset's function is noise cancellation.
+/// The cycles through noise control are not functions the headset has. On
+/// the headset they are noise cancellation on/off, and the app does the
+/// rest; see <see cref="NoiseControl"/>. So they are offered next to that
+/// one, and shown only while the headset's function is noise cancellation.
 /// </remarks>
 public static class ModeButton
 {
@@ -21,11 +21,19 @@ public static class ModeButton
     public static IReadOnlyList<ModeChoice> Choices { get; } =
         Registry.ModeButtonOptions.Keys.Order()
             .SelectMany(function => function == NoiseCancellation
-                ? new[] { new ModeChoice(function, false), new ModeChoice(function, true) }
-                : new[] { new ModeChoice(function, false) })
+                ? Enum.GetValues<NoiseCycle>().Select(cycle => new ModeChoice(function, cycle))
+                : new[] { new ModeChoice(function, NoiseCycle.None) })
             .ToList();
 
     /// <summary>The choice in effect, or null until the headset reports its function.</summary>
-    public static ModeChoice? Shown(int? function, bool cycling) =>
-        function is int f ? new ModeChoice(f, f == NoiseCancellation && cycling) : null;
+    public static ModeChoice? Shown(int? function, NoiseCycle cycle) =>
+        function is int f ? new ModeChoice(f, f == NoiseCancellation ? cycle : NoiseCycle.None) : null;
+
+    /// <summary>The cycle two saved switches describe: whether the button cycles, and whether the cycle skips off.</summary>
+    /// <remarks>
+    /// Saved as two switches so that settings saved before there was a
+    /// choice of cycle keep theirs.
+    /// </remarks>
+    public static NoiseCycle CycleOf(bool cycles, bool skipsOff) =>
+        !cycles ? NoiseCycle.None : skipsOff ? NoiseCycle.SkippingOff : NoiseCycle.AllThree;
 }
