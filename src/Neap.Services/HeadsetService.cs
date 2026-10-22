@@ -86,7 +86,12 @@ public sealed class HeadsetService : IDisposable
     private static readonly TimeSpan AskGap = TimeSpan.FromMilliseconds(300);
 
     /// <summary>How long to leave a silent transmitter alone before asking again.</summary>
-    private static readonly TimeSpan SilentRetry = TimeSpan.FromSeconds(3);
+    /// <remarks>
+    /// Short, because it is most of the wait between switching the headset
+    /// on and Neap seeing it: each pass also gives every device most of a
+    /// second to answer.
+    /// </remarks>
+    private static readonly TimeSpan SilentRetry = TimeSpan.FromSeconds(1);
 
     private static long BeatTicks => (long)(Beat.TotalSeconds * Stopwatch.Frequency);
 
@@ -567,12 +572,17 @@ public sealed class HeadsetService : IDisposable
                     // seconds apart, so the real state is never on screen
                     // long enough to read.
                     Publish(_link.Reconnecting());
-                    client = Open(out int present);
+                    client = Open(out int present, out bool heard);
                     if (client is null)
                     {
                         Forget();
                         Unreachable();
-                        _stopping.Token.WaitHandle.WaitOne(SilentRetry);
+                        // A device that sent something other than the answer
+                        // is waking: switched on, the headset's first reports
+                        // arrive ahead of its answers. Asked again after the
+                        // gap it needs between requests rather than after
+                        // the full wait.
+                        _stopping.Token.WaitHandle.WaitOne(heard ? AskGap : SilentRetry);
                         continue;
                     }
                     primed = false;
@@ -922,9 +932,12 @@ public sealed class HeadsetService : IDisposable
     /// <summary>How long each device is given the first time: longer than later, so a slow answer is not taken for silence.</summary>
     private static readonly TimeSpan FirstAsk = TimeSpan.FromSeconds(3);
 
-    private HeadsetClient? Open(out int present)
+    /// <param name="present">How many devices were found.</param>
+    /// <param name="heard">Whether a device sent something, though not the answer asked for.</param>
+    private HeadsetClient? Open(out int present, out bool heard)
     {
         bool denied = false;
+        bool spoke = false;
         var silent = new List<string>();
         // Settings are changed only on a headset where changing them has been
         // confirmed; any other is read and nothing more.
@@ -932,10 +945,12 @@ public sealed class HeadsetService : IDisposable
             out present, _askLast, _devices, (device, ex) =>
         {
             denied |= ex is AccessDeniedException;
+            spoke |= ex is InvalidDataException;
             if (ex is TimeoutException) silent.Add(device);
             if (ex is InvalidDataException or TimeoutException && !_toldQuiet.Add(ex.GetType())) return;
             NoteFault($"asking {device}", ex);
         }, _askedBefore ? null : FirstAsk);
+        heard = spoke;
         _askedBefore = true;
         _askLast = null;
         if (client is null && OperatingSystem.IsLinux() && _devices is SystemDevices)

@@ -78,6 +78,9 @@ and date.
 
 ### Changed
 
+- Neap notices the headset sooner after it is switched on: it asks every
+  second while the headset is away instead of every three, and asks again at
+  once when the headset's first reports arrive.
 - The app's text is set in Figtree, and the name beside the mark in Outfit,
   in place of Inter. Both are carried inside the app, so Windows and Linux
   show the same letters. The text is a little rounder and a little wider.
