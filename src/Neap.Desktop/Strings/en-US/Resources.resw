@@ -459,6 +459,27 @@
   <data name="Settings_MiniPanel.Description" xml:space="preserve">
     <value>A click on the icon by the clock opens quick controls instead of the window.</value>
   </data>
+  <data name="Settings_SoundDevicesHeading.Text" xml:space="preserve">
+    <value>Sound devices</value>
+  </data>
+  <data name="Settings_SoundFollows.Header" xml:space="preserve">
+    <value>Switch to the headset</value>
+  </data>
+  <data name="Settings_SoundFollows.Description" xml:space="preserve">
+    <value>Makes the headset the default speaker and microphone while it is connected.</value>
+  </data>
+  <data name="Settings_SoundBackTo.Header" xml:space="preserve">
+    <value>When it disconnects, play through</value>
+  </data>
+  <data name="Settings_MicrophoneBackTo.Header" xml:space="preserve">
+    <value>When it disconnects, record from</value>
+  </data>
+  <data name="Settings_BackToBefore" xml:space="preserve">
+    <value>The device used before</value>
+  </data>
+  <data name="Settings_BackToMissing" xml:space="preserve">
+    <value>A device that isn't plugged in</value>
+  </data>
   <data name="Settings_StartMinimised" xml:space="preserve">
     <value>Starts minimised, as this desktop has no notification area.</value>
   </data>
