@@ -215,7 +215,9 @@ public partial class MiniPanelWindow : Window
         (int, int)? at = clicked is not null && Click is { } c ? (c.X, c.Y) : null;
         var box = MiniPanel.Place(Of(screen.Bounds), Of(screen.WorkingArea),
             (int)Math.Ceiling(Bounds.Width * scale), (int)Math.Ceiling(Bounds.Height * scale), (int)Math.Round(EdgeGap * scale), at);
-        MaxHeight = box.Height / scale;
+        // Capped by the work area, never by the height it had: a row that grows after
+        // it opens, such as a switch moving under its name, needs the room.
+        MaxHeight = (screen.WorkingArea.Height / scale) - (2 * EdgeGap);
         var position = new PixelPoint(box.X, box.Y);
         if (Position != position) Position = position;
         if (_frosted) Ground(screen.WorkingArea, box);

@@ -1,7 +1,7 @@
 namespace Neap.Services;
 
 /// <summary>
-/// Global keyboard shortcuts that move the mix, whichever system takes the keys.
+/// Global keyboard shortcuts that move the mix or open the mini panel, whichever system takes the keys.
 /// </summary>
 /// <remarks>
 /// <para>
@@ -35,6 +35,8 @@ public abstract class MixHotkeys : IHotkeys
 
     /// <summary>A key was registered, refused, changed, or given up.</summary>
     public event Action? Changed;
+
+    public event Action? MiniPanelPressed;
 
     public bool Supported => true;
 
@@ -88,7 +90,11 @@ public abstract class MixHotkeys : IHotkeys
     protected abstract void LetGo();
 
     /// <summary>One of the keys was pressed; may be called from any thread.</summary>
-    protected void Pressed(MixKey which) => Platform.Post(() => Move(which));
+    protected void Pressed(MixKey which) => Platform.Post(() =>
+    {
+        if (which == MixKey.MiniPanel) MiniPanelPressed?.Invoke();
+        else Move(which);
+    });
 
     private void Begin()
     {

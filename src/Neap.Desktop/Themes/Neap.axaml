@@ -69,7 +69,8 @@
 
         <!--
             A row of settings: icon, name, what it does, and its control on the
-            right. The control keeps its own size and the name gives way to it.
+            right. The control keeps its own size and the name gives way to it,
+            until the name would wrap, when the control moves under it.
             It is an inset: a quiet fill one step above whatever it sits on, so
             it reads the same on the page and on a card, with no edge of its own
             except in high contrast, where the fill steps vanish.
@@ -93,11 +94,11 @@
                             MinHeight="{TemplateBinding MinHeight}"
                             Padding="{TemplateBinding Padding}">
                         <Grid x:Name="Layout" VerticalAlignment="Center" ColumnDefinitions="Auto,*,Auto" RowDefinitions="Auto,Auto">
-                            <PathIcon Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center"
+                            <PathIcon x:Name="Glyph" Width="20" Height="20" Margin="0,0,12,0" VerticalAlignment="Center"
                                       Foreground="{DynamicResource NeapTextSecondaryBrush}"
                                       Data="{TemplateBinding Icon}" IsVisible="{TemplateBinding Icon, Converter={x:Static ObjectConverters.IsNotNull}}" />
                             <StackPanel Grid.Column="1" VerticalAlignment="Center" Spacing="2" MinWidth="0">
-                                <TextBlock Text="{TemplateBinding Header}" />
+                                <TextBlock x:Name="HeaderText" Text="{TemplateBinding Header}" />
                                 <TextBlock Text="{TemplateBinding Description}" Classes="caption secondary"
                                            IsVisible="{TemplateBinding Description, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                                 <ContentPresenter Content="{TemplateBinding Below}"

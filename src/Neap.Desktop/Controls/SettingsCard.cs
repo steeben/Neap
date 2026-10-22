@@ -63,7 +63,8 @@ public class SettingsCard : ContentControl
     /// <summary>
     /// The width below which the control moves under the name, so neither is
     /// squeezed. A panel whose rows are short, like the mini panel, sets it
-    /// to zero in a style to keep a switch beside its name.
+    /// to zero in a style to keep a switch beside its name while the name
+    /// still fits on one line.
     /// </summary>
     public double SideBySideWidth
     {
@@ -75,12 +76,16 @@ public class SettingsCard : ContentControl
 
     private Grid? _layout;
     private Control? _control;
+    private Control? _glyph;
+    private Control? _header;
 
     protected override void OnApplyTemplate(TemplateAppliedEventArgs e)
     {
         base.OnApplyTemplate(e);
         _layout = e.NameScope.Find<Grid>("Layout");
         _control = e.NameScope.Find<Control>("Control");
+        _glyph = e.NameScope.Find<Control>("Glyph");
+        _header = e.NameScope.Find<Control>("HeaderText");
         Place(Bounds.Width);
     }
 
@@ -113,7 +118,7 @@ public class SettingsCard : ContentControl
     private void Place(double width)
     {
         if (_layout is null || _control is null || width <= 0) return;
-        bool beside = width >= SideBySideWidth;
+        bool beside = width >= SideBySideWidth && NameFitsBeside(width);
         Grid.SetRow(_control, beside ? 0 : 1);
         Grid.SetColumn(_control, beside ? 2 : 1);
         Grid.SetColumnSpan(_control, beside ? 1 : 2);
@@ -127,5 +132,27 @@ public class SettingsCard : ContentControl
         // The gap between name and control belongs to the control, so a row with no icon has no gap before its name.
         // Likewise the gap above it when it sits under the name, so a row with nothing under it has no spare room.
         _control.Margin = beside ? new Thickness(Space.M, 0, 0, 0) : new Thickness(0, Space.S, 0, 0);
+    }
+
+    /// <summary>Whether the name keeps to one line with the control beside it.</summary>
+    /// <remarks>
+    /// A control that says more than a switch, such as the reason the microphone
+    /// cannot be changed, can leave a short name a few letters wide, broken
+    /// mid-word. Then the control goes under the name instead.
+    /// </remarks>
+    private bool NameFitsBeside(double width)
+    {
+        if (_header is null || _control is null) return true;
+        _header.Measure(Size.Infinity);
+        _control.Measure(Size.Infinity);
+        double glyph = 0;
+        if (_glyph is { IsVisible: true })
+        {
+            _glyph.Measure(Size.Infinity);
+            glyph = _glyph.DesiredSize.Width;
+        }
+        double edges = Padding.Left + Padding.Right + BorderThickness.Left + BorderThickness.Right;
+        double control = _control.DesiredSize.Width - _control.Margin.Left - _control.Margin.Right;
+        return edges + glyph + _header.DesiredSize.Width + Space.M + control <= width;
     }
 }
