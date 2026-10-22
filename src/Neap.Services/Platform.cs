@@ -64,6 +64,16 @@ public interface IRouteSource
     /// <summary>Asks to be told when a route may have moved, or null when this system cannot say.</summary>
     /// <remarks>Raised on a thread of the system's own, which must not be held up.</remarks>
     IDisposable? Watch(Action moved);
+
+    /// <summary>Whether the app can choose the default output and microphone on this system.</summary>
+    bool CanSwitch { get; }
+
+    /// <summary>The active outputs or microphones; empty where <see cref="CanSwitch"/> is false.</summary>
+    IReadOnlyList<AudioDevice> Devices(bool output);
+
+    /// <summary>Makes a device the default for sound and for calls, as the system's own settings do.</summary>
+    /// <returns>False when the system refused, or cannot be asked.</returns>
+    bool SetDefault(string id);
 }
 
 /// <summary>A reading of the system's defaults.</summary>

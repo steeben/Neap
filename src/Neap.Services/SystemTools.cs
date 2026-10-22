@@ -40,6 +40,14 @@ public sealed class SystemRoutes : IRouteSource
 
     /// <remarks>Nothing here is told when a device moves, so <see cref="AudioRoute"/> polls.</remarks>
     public IDisposable? Watch(Action moved) => null;
+
+    /// <remarks>Only Windows so far: the sound server's default can be set too, but nobody has tried it on the headset.</remarks>
+    public bool CanSwitch => OperatingSystem.IsWindows();
+
+    public IReadOnlyList<AudioDevice> Devices(bool output) =>
+        OperatingSystem.IsWindows() ? Routing.Devices(output) : [];
+
+    public bool SetDefault(string id) => OperatingSystem.IsWindows() && DeviceFormat.SetDefaultEndpoint(id);
 }
 
 /// <summary>The few things the app asks the operating system to do that are the same on any system but done differently.</summary>
@@ -60,8 +68,8 @@ public static class SystemTools
 
     /// <summary>Opens the system's own sound settings, where the default output and microphone are chosen.</summary>
     /// <remarks>
-    /// The app does not change the default device itself: that is too
-    /// unreliable to do on anyone's behalf. Linux has no one settings app,
+    /// The app changes the default device itself only for someone who has
+    /// asked it to; see <see cref="SoundFollowsHeadset"/>. Linux has no one settings app,
     /// so this tries the ones desktops ship, in order.
     /// </remarks>
     /// <exception cref="PlatformNotSupportedException">No sound settings could be found to open.</exception>

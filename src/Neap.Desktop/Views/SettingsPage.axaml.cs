@@ -3,6 +3,7 @@ using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Layout;
 using Avalonia.Threading;
+using Neap.Core.Audio;
 using Neap.Core.Connection;
 using Neap.Core.Updates;
 using Neap.Desktop.Controls;
@@ -39,10 +40,12 @@ public partial class SettingsPage : UserControl
         NeapControls.AsGroup(TrayIconOptions);
         TrayWarnSlider.Minimum = TrayBattery.MinWarnAt;
         TrayWarnSlider.Maximum = TrayBattery.MaxWarnAt;
+        SoundDevices.IsVisible = SoundFollowsHeadset.Supported;
 
         _painting = true;
         MiniPanelSwitch.IsChecked = AppSettings.Current.MiniPanel;
         PaintTrayIcon();
+        SoundFollows.IsChecked = AppServices.SoundFollow.Enabled;
         StartWhenSignedIn.IsChecked = Startup.Enabled;
         CheckForUpdates.IsChecked = AppServices.Updates.Automatic;
         _painting = false;
@@ -84,6 +87,22 @@ public partial class SettingsPage : UserControl
             AppLog.Write($"notification area: the battery turns red at {level}%");
             PaintTrayIcon();
             (TopLevel.GetTopLevel(this) as MainWindow)?.TrayIconSettingChanged();
+        };
+        SoundFollows.IsCheckedChanged += (_, _) =>
+        {
+            if (_painting) return;
+            AppServices.SoundFollow.Enabled = SoundFollows.IsChecked == true;
+            PaintBackTo();
+        };
+        SoundBackTo.SelectionChanged += (_, _) =>
+        {
+            if (!_painting && SoundBackTo.SelectedItem is ComboBoxItem { Tag: string id })
+                AppSettings.Update(s => s.SoundBackTo = id);
+        };
+        MicrophoneBackTo.SelectionChanged += (_, _) =>
+        {
+            if (!_painting && MicrophoneBackTo.SelectedItem is ComboBoxItem { Tag: string id })
+                AppSettings.Update(s => s.MicrophoneBackTo = id);
         };
 
         CheckForUpdates.IsCheckedChanged += (_, _) =>
@@ -143,6 +162,7 @@ public partial class SettingsPage : UserControl
         PaintRecording();
         AppServices.Updates.Changed += PaintUpdates;
         PaintUpdates();
+        if (SoundFollowsHeadset.Supported) PaintBackTo();
     }
 
     protected override void OnUnloaded(RoutedEventArgs e)
@@ -247,6 +267,42 @@ public partial class SettingsPage : UserControl
 
         // Said when it changes, not as a download's percentage ticks over.
         AutomationProperties.SetLiveSetting(UpdateStatus, AutomationLiveSetting.Polite);
+    }
+
+    /// <summary>Fills the lists of devices to go back to, and offers them only while the defaults follow the headset.</summary>
+    /// <remarks>
+    /// Filled when the page opens rather than kept current: a device plugged
+    /// in while the page is open shows the next time it is.
+    /// </remarks>
+    private void PaintBackTo()
+    {
+        bool on = AppServices.SoundFollow.Enabled;
+        SoundBackCard.IsEnabled = on;
+        MicrophoneBackCard.IsEnabled = on;
+        _painting = true;
+        try
+        {
+            Fill(SoundBackTo, AudioRoute.Devices(output: true), AppSettings.Current.SoundBackTo);
+            Fill(MicrophoneBackTo, AudioRoute.Devices(output: false), AppSettings.Current.MicrophoneBackTo);
+        }
+        finally { _painting = false; }
+    }
+
+    /// <summary>
+    /// The devices that are not the headset's, after the device before the
+    /// headset's, with the chosen one selected.
+    /// </summary>
+    /// <remarks>A chosen device that is not plugged in stays chosen, and says so.</remarks>
+    private static void Fill(ComboBox list, IReadOnlyList<AudioDevice> devices, string chosen)
+    {
+        list.Items.Clear();
+        list.Items.Add(new ComboBoxItem { Content = Strings.Get("Settings_BackToBefore"), Tag = "" });
+        var offered = devices.Where(d => d.Product.Length == 0).ToList();
+        foreach (var device in offered)
+            list.Items.Add(new ComboBoxItem { Content = device.Name, Tag = device.Id });
+        if (chosen.Length > 0 && offered.All(d => d.Id != chosen))
+            list.Items.Add(new ComboBoxItem { Content = Strings.Get("Settings_BackToMissing"), Tag = chosen });
+        list.SelectedItem = list.Items.OfType<ComboBoxItem>().First(i => (string)i.Tag! == chosen);
     }
 
     private static string Elapsed(TimeSpan length) => $"{(int)length.TotalMinutes}:{length.Seconds:00}";

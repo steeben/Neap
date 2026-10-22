@@ -155,6 +155,28 @@
                 </c:SettingsCard>
             </StackPanel>
 
+            <!-- Left out where the system does not let the app choose its defaults. -->
+            <StackPanel x:Name="SoundDevices">
+                <TextBlock loc:Uid.Value="Settings_SoundDevicesHeading" Classes="sectionheader" />
+                <StackPanel Spacing="{StaticResource NeapSpaceS}">
+                    <c:SettingsCard loc:Uid.Value="Settings_SoundFollows" Icon="{StaticResource IconDevice}">
+                        <ToggleSwitch x:Name="SoundFollows" />
+                    </c:SettingsCard>
+                    <c:SettingsCard
+                        x:Name="SoundBackCard"
+                        loc:Uid.Value="Settings_SoundBackTo"
+                        Icon="{StaticResource IconVolume}">
+                        <ComboBox x:Name="SoundBackTo" MinWidth="240" />
+                    </c:SettingsCard>
+                    <c:SettingsCard
+                        x:Name="MicrophoneBackCard"
+                        loc:Uid.Value="Settings_MicrophoneBackTo"
+                        Icon="{StaticResource IconMicrophone}">
+                        <ComboBox x:Name="MicrophoneBackTo" MinWidth="240" />
+                    </c:SettingsCard>
+                </StackPanel>
+            </StackPanel>
+
             <TextBlock loc:Uid.Value="Settings_DiagnosticsHeading" Classes="sectionheader" />
             <StackPanel Spacing="{StaticResource NeapSpaceS}">
                 <c:SettingsCard

@@ -20,6 +20,11 @@ and date.
   charging. The headset styles show a faint, struck-through headset while it
   is disconnected. Otherwise, with no reading or with "Neap" chosen, it is
   Neap's own icon. Hovering over it still says the charge in words.
+- Neap can switch Windows to the headset. With **Switch to the headset** on
+  in Settings, the headset becomes the default speaker and microphone, for
+  calls too, when it connects, and the devices used before come back when it
+  is switched off or out of range. Settings can name other devices to go back
+  to instead. It is off by default, and Windows only.
 - The mini panel has spatial sound, between noise cancellation and the
   equaliser: Off, Windows Sonic or Dolby Atmos, whichever the system offers. It
   is left out where the system has none, and it stays when the headset is away,
@@ -80,6 +85,10 @@ and date.
 
 ### Changed
 
+- Neap notices the headset sooner after it is switched on: it asks every
+  second while the headset is away instead of every three, and asks again at
+  once when the headset's first reports arrive. It notices a switch-off in
+  about three seconds instead of up to twenty.
 - The app's text is set in Figtree, and the name beside the mark in Outfit,
   in place of Inter. Both are carried inside the app, so Windows and Linux
   show the same letters. The text is a little rounder and a little wider.

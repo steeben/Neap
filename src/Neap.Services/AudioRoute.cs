@@ -114,6 +114,16 @@ public sealed class AudioRoute : IDisposable
         }, TaskScheduler.Default);
     }
 
+    /// <summary>Whether the default output and microphone can be chosen by the app here.</summary>
+    public static bool CanSwitch => Source.CanSwitch;
+
+    /// <summary>The active outputs or microphones, for choosing a default.</summary>
+    public static IReadOnlyList<AudioDevice> Devices(bool output) => Source.Devices(output);
+
+    /// <summary>Makes a device the default for sound and for calls.</summary>
+    /// <returns>False when the system refused.</returns>
+    public static bool SetDefault(string id) => Source.SetDefault(id);
+
     /// <summary>The names of one transmitter's devices, output or microphone.</summary>
     public static List<string> Belonging(string product, bool output) => Source.Belonging(product, output);
 
@@ -126,7 +136,7 @@ public sealed class AudioRoute : IDisposable
         return (look.Output, look.Calls, look.Input, look.CallsInput, look.Cable);
     }
 
-    /// <summary>A pretend run's routes: one headset, and nothing that moves.</summary>
+    /// <summary>A pretend run's routes: one headset, and nothing that moves or can be moved.</summary>
     private sealed class PretendRoutes : IRouteSource
     {
         public static PretendRoutes Instance { get; } = new();
@@ -137,6 +147,12 @@ public sealed class AudioRoute : IDisposable
         public List<string> Belonging(string product, bool output) => PretendWindows.Belonging(product, output);
 
         public IDisposable? Watch(Action moved) => null;
+
+        public bool CanSwitch => false;
+
+        public IReadOnlyList<AudioDevice> Devices(bool output) => [];
+
+        public bool SetDefault(string id) => false;
     }
 
     public void Dispose()
